@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'key_ingredient_page.dart';
 
 class DietSelectionPage extends StatefulWidget {
   const DietSelectionPage({super.key});
@@ -50,15 +51,20 @@ class _DietSelectionPageState extends State<DietSelectionPage> {
           ),
 
           Padding(
-            padding: const EdgeInsets.all(30),
+            padding: const EdgeInsets.all(100),
             child: SizedBox(
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: selectedDiet == null
-                    ? null
-                    : () {
-                        debugPrint("Selected: $selectedDiet");
-                      },
+                ? null
+                : () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const IngredientPage(),
+                      ),
+                    );
+                  },
                 child: const Text("Continue"),
               ),
             ),
