@@ -121,3 +121,71 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
+
+
+
+
+// class MyApp extends StatelessWidget {
+//   const MyApp({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return const MaterialApp(
+//       home: SpoonTestPage(),
+//     );
+//   }
+// }
+
+// class SpoonTestPage extends StatefulWidget {
+//   const SpoonTestPage({super.key});
+
+//   @override
+//   State<SpoonTestPage> createState() => _SpoonTestPageState();
+// }
+
+// class _SpoonTestPageState extends State<SpoonTestPage> {
+//   final SpoonacularService _service = SpoonacularService();
+//   List<dynamic> recipes = [];
+//   bool isLoading = false;
+
+//   void fetchRecipes() async {
+//     setState(() {
+//       isLoading = true;
+//     });
+
+//     final results = await _service
+//         .searchByIngredients(['beef',"onion","garlic", "tomato", "salt", "pepper"]);
+
+//     setState(() {
+//       recipes = results;
+//       isLoading = false;
+//     });
+//   }
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     fetchRecipes();
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(title: const Text('Spoonacular Test')),
+//       body: isLoading
+//           ? const Center(child: CircularProgressIndicator())
+//           : ListView.builder(
+//               itemCount: recipes.length,
+//               itemBuilder: (context, index) {
+//                 final recipe = recipes[index];
+//                 return ListTile(
+//                   title: Text(recipe['title']),
+//                   subtitle: Text(
+//                       'Used: ${recipe['usedIngredientCount']} | Missing: ${recipe['missedIngredientCount']}'),
+//                   leading: Image.network(recipe['image']),
+//                 );
+//               },
+//             ),
+//     );
+//   }
+// } 
