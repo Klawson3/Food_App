@@ -21,8 +21,16 @@ class ResultPage extends StatelessWidget {
           final recipe = recipes[index];
           return ListTile(
             title: Text(recipe['title']),
-            subtitle: Text(
-              "✅ Used: ${recipe['usedIngredientCount']} ingredient(s) ❌ Missing: ${recipe['missedIngredientCount']} ingredient(s)",
+            subtitle: Column (
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "✅ Used: ${recipe['usedIngredients'].map((i) => i['name']).join(', ')}",
+                ),
+                Text(
+                  "❌ Missing: ${recipe['missedIngredients'].map((i) => i['name']).join(', ')}",
+                ),
+              ],
             ),
           );
         },
