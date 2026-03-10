@@ -61,7 +61,7 @@ class _DietSelectionPageState extends State<DietSelectionPage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const IngredientPage(),
+                        builder: (context) => IngredientPage(diet: selectedDiet!),
                       ),
                     );
                   },
