@@ -31,7 +31,9 @@ class _IngredientPageState extends State<IngredientPage> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ResultPage(recipes: recipes, service: service),
+          builder: (context) {
+            return ResultPage(recipes: recipes, service: service);
+          }
         ),
       );
     } catch (e) {
