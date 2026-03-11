@@ -6,6 +6,16 @@ class SpoonacularService {
   final String apiKey = '6c86fd3ac4d6461c99b4fadd891e5b67';
   final String baseUrl = 'https://api.spoonacular.com';
 
+  /// Searches for recipes by given ingredients.
+  ///
+  /// The function takes a list of ingredients, sends a GET request to the
+  /// Spoonacular API, and returns a list of recipe objects.
+  ///
+  /// The list of recipe objects is sorted in the following order:
+  ///
+  /// 1. Fewest missing ingredients first
+  /// 2. More used ingredients next
+  /// 3. More likes last
   Future<List<dynamic>> searchByIngredients(List<String> ingredients) async {
     final ingredientString = ingredients.join(',');
 
@@ -43,6 +53,13 @@ class SpoonacularService {
     }
   }
 
+  /// Gets the details of a given recipe.
+  ///
+  /// The function takes a recipe ID, sends a GET request to the
+  /// Spoonacular API, and returns a map of recipe details.
+  ///
+  /// If the request is successful, it returns a map of recipe details.
+  /// If the request is unsuccessful, it throws an exception.
   Future<Map<String, dynamic>> getRecipeDetails(int id) async {
     final response = await http.get(
       Uri.parse(
