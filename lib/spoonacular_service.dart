@@ -31,21 +31,44 @@ class SpoonacularService {
     if (response.statusCode == 200) {
   List recipes = jsonDecode(response.body);
 
-  //  Auto-rank recipes
   recipes.sort((a, b) {
-    // 1️ Fewest missing ingredients first
-    int missingCompare = a['missedIngredientCount']
-        .compareTo(b['missedIngredientCount']);
+    int usedA = a['usedIngredientCount'];
+    int missingA = a['missedIngredientCount'];
+
+    int usedB = b['usedIngredientCount'];
+    int missingB = b['missedIngredientCount'];
+
+    // 1️ Match percentage
+    double scoreA = usedA / (usedA + missingA);
+    double scoreB = usedB / (usedB + missingB);
+
+    int scoreCompare = scoreB.compareTo(scoreA);
+    if (scoreCompare != 0) return scoreCompare;
+
+    // 2 Fewer missing ingredients
+    int missingCompare = missingA.compareTo(missingB);
     if (missingCompare != 0) return missingCompare;
 
-    // 2️ More used ingredients next
-    int usedCompare = b['usedIngredientCount']
-        .compareTo(a['usedIngredientCount']);
-    if (usedCompare != 0) return usedCompare;
-
-    // 3️ More likes last
+    // 3️ More likes
     return b['likes'].compareTo(a['likes']);
   });
+  for (var recipe in recipes) {
+    int used = recipe['usedIngredientCount'];
+    int missing = recipe['missedIngredientCount'];
+    int total = used + missing;
+
+    double matchScore =
+        total == 0 ? 0 : used / total;
+
+    //  Penalize large recipes
+    double complexityPenalty = total / 20; // tweakable
+
+  recipe['finalScore'] = matchScore - complexityPenalty;
+}
+// 2️ Sort ONCE
+recipes.sort((a, b) {
+  return b['finalScore'].compareTo(a['finalScore']);
+});
 
   return recipes;
     } else {
