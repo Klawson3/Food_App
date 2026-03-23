@@ -63,15 +63,21 @@ class _IngredientPageState extends State<IngredientPage> {
             const SizedBox(height: 10),
             ElevatedButton(
               onPressed: () {
-                if (controller.text.trim().isEmpty) return;
-                setState(() {
-                  ingredients.add(controller.text);
+                String input = controller.text.trim().toLowerCase();
+                if (input.isEmpty) return;
+                if(!ingredients.contains(input)) {
+                  setState(() {
+                  ingredients.add(input);
                   controller.clear();
                 });
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Ingredient already added"))
+                );
+              }
               },
               child: const Text("Add Ingredient"),
             ),
-
             const SizedBox(height: 20),
             Expanded(
               child: ListView.builder(
