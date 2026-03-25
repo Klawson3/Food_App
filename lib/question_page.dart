@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'spoonacular_service.dart';
-import 'result_page.dart';
 import 'recipe_page.dart';
 
 class QuestionPage extends StatefulWidget {
