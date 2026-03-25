@@ -13,9 +13,9 @@ class SpoonacularService {
   ///
   /// The list of recipe objects is sorted in the following order:
   ///
-  /// 1. Fewest missing ingredients first
-  /// 2. More used ingredients next
-  /// 3. More likes last
+  /// 1. Higher match score first (used ingredients / total ingredients)
+  /// 2. 2nd Highest match score next
+  /// 3. Fewer total ingredients tie/breaker
   Future<List<dynamic>> searchByIngredients(List<String> ingredients) async {
     final ingredientString = ingredients.join(',');
 
@@ -31,27 +31,6 @@ class SpoonacularService {
     if (response.statusCode == 200) {
   List recipes = jsonDecode(response.body);
 
-  recipes.sort((a, b) {
-    int usedA = a['usedIngredientCount'];
-    int missingA = a['missedIngredientCount'];
-
-    int usedB = b['usedIngredientCount'];
-    int missingB = b['missedIngredientCount'];
-
-    // 1️ Match percentage
-    double scoreA = usedA / (usedA + missingA);
-    double scoreB = usedB / (usedB + missingB);
-
-    int scoreCompare = scoreB.compareTo(scoreA);
-    if (scoreCompare != 0) return scoreCompare;
-
-    // 2 Fewer missing ingredients
-    int missingCompare = missingA.compareTo(missingB);
-    if (missingCompare != 0) return missingCompare;
-
-    // 3️ More likes
-    return b['likes'].compareTo(a['likes']);
-  });
   for (var recipe in recipes) {
     int used = recipe['usedIngredientCount'];
     int missing = recipe['missedIngredientCount'];
@@ -61,13 +40,19 @@ class SpoonacularService {
         total == 0 ? 0 : used / total;
 
     //  Penalize large recipes
-    double complexityPenalty = total / 20; // tweakable
+    double complexityPenalty = total / 15; // tweakable
 
   recipe['finalScore'] = matchScore - complexityPenalty;
 }
-// 2️ Sort ONCE
+// 2️ Sort once
 recipes.sort((a, b) {
-  return b['finalScore'].compareTo(a['finalScore']);
+ int scoreCompare =
+      b['finalScore'].compareTo(a['finalScore']);
+  if (scoreCompare != 0) return scoreCompare;
+
+  // Tie-breaker,  fewer missing ingredients
+  return a['missedIngredientCount']
+      .compareTo(b['missedIngredientCount']);
 });
 
   return recipes;
