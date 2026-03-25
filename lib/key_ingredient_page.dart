@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_app/spoonacular_service.dart';
-import 'result_page.dart';
+import 'question_page.dart';
 
 class IngredientPage extends StatefulWidget {
   final String diet;
@@ -32,7 +32,7 @@ class _IngredientPageState extends State<IngredientPage> {
         context,
         MaterialPageRoute(
           builder: (context) {
-            return ResultPage(recipes: recipes, service: service);
+            return QuestionPage(recipes: recipes, service: service);
           }
         ),
       );
