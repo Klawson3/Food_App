@@ -25,8 +25,8 @@ class _RecipePageState extends State<RecipePage> {
   @override
   Widget build(BuildContext context) {
     final recipe = widget.bestRecipe;
-    final List missedIngredients = recipe['missedIngredients'];
-    final List usedIngredients = recipe['usedIngredients'];
+    final have = widget.haveIngredients;
+    final need = widget.needIngredients;
     
 
     return Scaffold(
@@ -45,9 +45,9 @@ class _RecipePageState extends State<RecipePage> {
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 10),
-          ...usedIngredients.map(
+          ...have.map(
             (ingredient) => Text(
-              "✅ ${ingredient['name']}",
+              "✅ $ingredient",
               style: const TextStyle(fontSize: 16),
             ),
           ),
@@ -59,9 +59,9 @@ class _RecipePageState extends State<RecipePage> {
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 10),
-          ...missedIngredients.map(
+          ...need.map(
             (ingredient) => Text(
-              "❌ ${ingredient['name']}",
+              "❌ $ingredient",
               style: const TextStyle(fontSize: 16),
             ),
           ),
