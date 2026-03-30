@@ -18,10 +18,12 @@ class QuestionPage extends StatefulWidget {
 }
 
 class _QuestionPageState extends State<QuestionPage> {
-
   int recipeIndex = 0;
   int ingredientIndex = 0;
   int numQuestions = 0;
+
+  List<String> haveIngredients = [];
+  List<String> needIngredients = [];
 
   /*
   [getter] Acts like a variable but recalculates every time it's accessed
@@ -36,49 +38,64 @@ class _QuestionPageState extends State<QuestionPage> {
   }
   
   dynamic bestRecipe;
-  void onPressedYes() {
-    bestRecipe = currentRecipe;
-    setState(() {
-      numQuestions += 1;
-      ingredientIndex += 1;
-    });
-    
-    List missedList = currentRecipe['missedIngredients'];
 
-    if (numQuestions >= 3 || ingredientIndex >= missedList.length) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => RecipePage(
-            service: widget.service,
-            bestRecipe: bestRecipe,
-          ),
+  void goToRecipePage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => RecipePage(
+          service: widget.service,
+          bestRecipe: bestRecipe,
+          haveIngredients: haveIngredients,
+          needIngredients: needIngredients,
         ),
-      );
+      ),
+    );
+  }
+
+  void onPressedYes() {
+    final recipe = currentRecipe;
+    final List missedList = recipe['missedIngredients'];
+    final ingredient = missedList[ingredientIndex]['name'];
+
+    haveIngredients.add(ingredient);
+
+    final nextNumQuestions = numQuestions + 1;
+    final nextIngredientIndex = ingredientIndex + 1;
+
+    bestRecipe = recipe;
+
+    if (nextNumQuestions >= 3 || nextIngredientIndex >= missedList.length) {
+      goToRecipePage();
+      return;
     }
+
+    setState(() {
+      numQuestions = nextNumQuestions;
+      ingredientIndex = nextIngredientIndex;
+    });
   }
 
   void onPressedNo() {
-    setState(() {
-      numQuestions += 1;
-      ingredientIndex = 0;
-      recipeIndex += 1;
-    });
+    final recipe = currentRecipe;
+    final List missedList = recipe['missedIngredients'];
+    final ingredient = missedList[ingredientIndex]['name'];
 
-    List missedList = currentRecipe['missedIngredients'];
+    needIngredients.add(ingredient);
 
+    final nextNumQuestions = numQuestions + 1;
+    final nextRecipeIndex = recipeIndex + 1;
     
-    if (numQuestions >= 3 || ingredientIndex >= missedList.length) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => RecipePage(
-            service: widget.service,
-            bestRecipe: bestRecipe,
-          ),
-        ),
-      );
+    if (nextNumQuestions >= 3 || nextRecipeIndex >= widget.recipes.length) {
+      bestRecipe ??= currentRecipe; //if bestRecipe is null, assign it to currentRecipe
+      goToRecipePage();
+      return;
     }
+    setState(() {
+      numQuestions = nextNumQuestions;
+      recipeIndex = nextRecipeIndex;
+      ingredientIndex = 0;
+    });
   }
   
   @override
