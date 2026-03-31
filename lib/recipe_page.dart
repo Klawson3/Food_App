@@ -32,11 +32,10 @@ class _RecipePageState extends State<RecipePage> {
     return Scaffold(
       appBar: AppBar(title: const Text("Your Best Recipe")),
       body: Padding(padding: const EdgeInsets.all(25),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: ListView(
         children: [
           Text(
-            widget.bestRecipe['title'],
+            recipe['title'],
             style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 20),

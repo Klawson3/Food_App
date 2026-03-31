@@ -6,12 +6,14 @@ import 'key_ingredient_page.dart';
 class QuestionPage extends StatefulWidget {
   final List<dynamic> recipes; //dynamic means the list can contain any type of data
   final SpoonacularService service; //Service to fetch recipe data
+  final List<String> initialIngredients; // key ingredients
 
   //constructor
   const QuestionPage({
     super.key,
     required this.recipes,
     required this.service,
+    required this.initialIngredients,
   });
 
   @override
@@ -26,6 +28,14 @@ class _QuestionPageState extends State<QuestionPage> {
   List<String> haveIngredients = [];
   List<String> needIngredients = [];
 
+  dynamic bestRecipe;
+
+  @override
+  void initState() {
+    super.initState();
+    haveIngredients = List<String>.from(widget.initialIngredients);
+  }
+
   /*
   [getter] Acts like a variable but recalculates every time it's accessed
   When recipeIndex changes, currentRecipe automatically updates too
@@ -37,8 +47,6 @@ class _QuestionPageState extends State<QuestionPage> {
     Map ingredient = missedList[ingredientIndex];
     return ingredient['name'];
   }
-  
-  dynamic bestRecipe;
 
   void goToRecipePage() {
     Navigator.push(
@@ -46,7 +54,7 @@ class _QuestionPageState extends State<QuestionPage> {
       MaterialPageRoute(
         builder: (context) => RecipePage(
           service: widget.service,
-          bestRecipe: bestRecipe,
+          bestRecipe: bestRecipe ?? currentRecipe, //if bestRecipe is null, use currentRecipe
           haveIngredients: haveIngredients,
           needIngredients: needIngredients,
         ),
@@ -59,7 +67,10 @@ class _QuestionPageState extends State<QuestionPage> {
     final List missedList = recipe['missedIngredients'];
     final ingredient = missedList[ingredientIndex]['name'];
 
-    haveIngredients.add(ingredient);
+    // Add ingredient to haveIngredients if not already present
+    if (!haveIngredients.contains(ingredient)) {
+      haveIngredients.add(ingredient);
+    } 
 
     final nextNumQuestions = numQuestions + 1;
     final nextIngredientIndex = ingredientIndex + 1;
@@ -82,7 +93,11 @@ class _QuestionPageState extends State<QuestionPage> {
     final List missedList = recipe['missedIngredients'];
     final ingredient = missedList[ingredientIndex]['name'];
 
-    needIngredients.add(ingredient);
+    // Add ingredient to needIngredients if not already present
+    if (!needIngredients.contains(ingredient)) {
+      needIngredients.add(ingredient);
+    }
+
 
     final nextNumQuestions = numQuestions + 1;
     final nextRecipeIndex = recipeIndex + 1;

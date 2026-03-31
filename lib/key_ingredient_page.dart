@@ -32,7 +32,7 @@ class _IngredientPageState extends State<IngredientPage> {
         context,
         MaterialPageRoute(
           builder: (context) {
-            return QuestionPage(recipes: recipes, service: service);
+            return QuestionPage(recipes: recipes, service: service, initialIngredients: ingredients);
           }
         ),
       );
