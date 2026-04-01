@@ -23,7 +23,7 @@ class SpoonacularService {
       Uri.parse(
         '$baseUrl/recipes/findByIngredients'
         '?ingredients=$ingredientString'
-        '&number=5'
+        '&number=20'
         '&apiKey=$apiKey',
       ),
     );
