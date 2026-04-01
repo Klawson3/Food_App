@@ -66,13 +66,12 @@ class _IngredientPageState extends State<IngredientPage> {
                 String input = controller.text.trim().toLowerCase();
                 if (input.isEmpty) return;
                 
-                if(ingredients.length >= 3) {
+                if(ingredients.length >= 1) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content : Text("You can add up to 3 ingredients")),
+                    const SnackBar(content : Text("You can add up to 1 ingredient")),
                     );
                     return;
                 }
-
 
                 if(!ingredients.contains(input)) {
                   setState(() {
