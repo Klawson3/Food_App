@@ -20,7 +20,7 @@ class QuestionPage extends StatefulWidget {
 }
 
 class _QuestionPageState extends State<QuestionPage> {
-  int recipeIndex = 0;
+  // int recipeIndex = 0;
   int ingredientIndex = 0;
   int numQuestions = 0;
 
@@ -39,12 +39,18 @@ class _QuestionPageState extends State<QuestionPage> {
   [getter] Acts like a variable but recalculates every time it's accessed
   When recipeIndex changes, currentRecipe automatically updates too
   */
-  dynamic get currentRecipe => widget.recipes[recipeIndex];
+  dynamic get currentRecipe => widget.recipes.first;
   //[getter] Retrieve the ingredient name at "ingredientIndex" from current recipe's missing ingredients.
   String get currentIngredient {
     List missedList = currentRecipe['missedIngredients'];
-    Map ingredient = missedList[ingredientIndex];
-    return ingredient['name'];
+
+    if (missedList.isEmpty) return "no more ingredients";
+
+    if (ingredientIndex >= missedList.length) {
+      ingredientIndex = 0;
+    }
+
+    return missedList[ingredientIndex]['name'];
   }
 
   void goToRecipePage() {
@@ -63,56 +69,100 @@ class _QuestionPageState extends State<QuestionPage> {
   }
 
   void onPressedYes() {
-    final recipe = currentRecipe;
-    final List missedList = recipe['missedIngredients'];
-    final ingredient = missedList[ingredientIndex]['name'];
+    final ingredient = currentIngredient;
 
-    // Add ingredient to haveIngredients if not already present
     if (!haveIngredients.contains(ingredient)) {
       haveIngredients.add(ingredient);
-    } 
+    }
 
-    final nextNumQuestions = numQuestions + 1;
-    final nextIngredientIndex = ingredientIndex + 1;
+    numQuestions++;
 
-    bestRecipe = recipe;
+    reRankRecipes(); //  THIS is the key
 
-    if (nextNumQuestions >= 3 || nextIngredientIndex >= missedList.length) {
+    if (numQuestions >= 3) {
+      bestRecipe = widget.recipes.first;
       goToRecipePage();
       return;
     }
 
     setState(() {
-      numQuestions = nextNumQuestions;
-      ingredientIndex = nextIngredientIndex;
+      ingredientIndex++;
     });
   }
 
   void onPressedNo() {
-    final recipe = currentRecipe;
-    final List missedList = recipe['missedIngredients'];
-    final ingredient = missedList[ingredientIndex]['name'];
+    final ingredient = currentIngredient;
 
-    // Add ingredient to needIngredients if not already present
     if (!needIngredients.contains(ingredient)) {
       needIngredients.add(ingredient);
     }
 
+    numQuestions++;
 
-    final nextNumQuestions = numQuestions + 1;
-    final nextRecipeIndex = recipeIndex + 1;
-    
-    if (nextNumQuestions >= 3 || nextRecipeIndex >= widget.recipes.length) {
-      bestRecipe ??= currentRecipe; //if bestRecipe is null, assign it to currentRecipe
+    reRankRecipes(); //  THIS is the key
+
+    if (numQuestions >= 3) {
+      bestRecipe = widget.recipes.first;
       goToRecipePage();
       return;
     }
+
     setState(() {
-      numQuestions = nextNumQuestions;
-      recipeIndex = nextRecipeIndex;
-      ingredientIndex = 0;
+      ingredientIndex++;
     });
+}
+  void reRankRecipes() {
+  for (var recipe in widget.recipes) {
+    int used = recipe['usedIngredientCount'];
+    int missing = recipe['missedIngredientCount'];
+    int total = used + missing;
+
+    //  Base score (based on user input)
+    double matchScore =
+        widget.initialIngredients.isEmpty
+            ? 0
+            : used / widget.initialIngredients.length;
+
+    double complexityPenalty = total / 15;
+
+    double questionScore = 0;
+
+    List usedNames = (recipe['usedIngredients'] as List)
+        .map((e) => e['name'])
+        .toList();
+
+    List missedNames = (recipe['missedIngredients'] as List)
+        .map((e) => e['name'])
+        .toList();
+
+    //  Reward ingredients user HAS
+    for (var ing in haveIngredients) {
+      if (usedNames.contains(ing)) {
+        questionScore += 0.3;
+      }
+    }
+
+    //  Penalize ingredients user DOESN’T HAVE
+    for (var ing in needIngredients) {
+      if (missedNames.contains(ing)) {
+        questionScore -= 0.5;
+      }
+    }
+
+    recipe['finalScore'] =
+        matchScore - complexityPenalty + questionScore;
   }
+
+  //  Sort recipes AFTER updating scores
+  widget.recipes.sort((a, b) {
+    int scoreCompare =
+        b['finalScore'].compareTo(a['finalScore']);
+    if (scoreCompare != 0) return scoreCompare;
+
+    return a['missedIngredientCount']
+        .compareTo(b['missedIngredientCount']);
+  });
+}
   
   @override
   Widget build(BuildContext context) {
