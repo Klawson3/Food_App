@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'spoonacular_service.dart';
+import 'allRecipes_page.dart';
 
 class RecipePage extends StatefulWidget {
   final SpoonacularService service;
+  final List<dynamic> recipes;
   final Map<String, dynamic> bestRecipe;
   final List<String> haveIngredients;
   final List<String> needIngredients;
@@ -11,6 +13,7 @@ class RecipePage extends StatefulWidget {
   const RecipePage({
     super.key,
     required this.service,
+    required this.recipes,
     required this.bestRecipe,
     required this.haveIngredients,
     required this.needIngredients,
@@ -21,6 +24,18 @@ class RecipePage extends StatefulWidget {
 }
 
 class _RecipePageState extends State<RecipePage> {
+
+  void seeMore() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ResultPage(
+          recipes: widget.recipes,
+          service: widget.service,
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,6 +79,8 @@ class _RecipePageState extends State<RecipePage> {
               style: const TextStyle(fontSize: 16),
             ),
           ),
+
+          ElevatedButton(onPressed: seeMore, child: const Text("See More")),
         ],
       ),
     ),

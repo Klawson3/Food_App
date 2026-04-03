@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'spoonacular_service.dart';
-import 'recipe_page.dart';
-import 'key_ingredient_page.dart';
+import 'bestRecipe_page.dart';
 
 class QuestionPage extends StatefulWidget {
   final List<dynamic> recipes; //dynamic means the list can contain any type of data
@@ -54,6 +53,7 @@ class _QuestionPageState extends State<QuestionPage> {
       MaterialPageRoute(
         builder: (context) => RecipePage(
           service: widget.service,
+          recipes: widget.recipes,
           bestRecipe: bestRecipe ?? currentRecipe, //if bestRecipe is null, use currentRecipe
           haveIngredients: haveIngredients,
           needIngredients: needIngredients,
