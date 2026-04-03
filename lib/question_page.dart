@@ -53,6 +53,7 @@ class _QuestionPageState extends State<QuestionPage> {
       MaterialPageRoute(
         builder: (context) => RecipePage(
           service: widget.service,
+          recipes: widget.recipes,
           bestRecipe: bestRecipe ?? currentRecipe, //if bestRecipe is null, use currentRecipe
           haveIngredients: haveIngredients,
           needIngredients: needIngredients,

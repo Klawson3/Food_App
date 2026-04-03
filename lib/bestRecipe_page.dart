@@ -4,6 +4,7 @@ import 'allRecipes_page.dart';
 
 class RecipePage extends StatefulWidget {
   final SpoonacularService service;
+  final List<dynamic> recipes;
   final Map<String, dynamic> bestRecipe;
   final List<String> haveIngredients;
   final List<String> needIngredients;
@@ -12,6 +13,7 @@ class RecipePage extends StatefulWidget {
   const RecipePage({
     super.key,
     required this.service,
+    required this.recipes,
     required this.bestRecipe,
     required this.haveIngredients,
     required this.needIngredients,
@@ -28,7 +30,7 @@ class _RecipePageState extends State<RecipePage> {
       context,
       MaterialPageRoute(
         builder: (context) => ResultPage(
-          recipes: s
+          recipes: widget.recipes,
           service: widget.service,
         ),
       ),
