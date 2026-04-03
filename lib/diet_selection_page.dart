@@ -17,7 +17,8 @@ class _DietSelectionPageState extends State<DietSelectionPage> {
     "Keto",
     "High Protein",
     "Paleo",
-    "Gluten-Free"
+    "Gluten-Free",
+    "None"
   ];
 
   @override
