@@ -63,6 +63,7 @@ class _QuestionPageState extends State<QuestionPage> {
           bestRecipe: bestRecipe ?? currentRecipe, //if bestRecipe is null, use currentRecipe
           haveIngredients: haveIngredients,
           needIngredients: needIngredients,
+          initialIngredients: widget.initialIngredients,
         ),
       ),
     );
