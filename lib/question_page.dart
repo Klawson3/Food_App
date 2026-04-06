@@ -63,6 +63,7 @@ class _QuestionPageState extends State<QuestionPage> {
           bestRecipe: bestRecipe ?? currentRecipe, //if bestRecipe is null, use currentRecipe
           haveIngredients: haveIngredients,
           needIngredients: needIngredients,
+          initialIngredients: widget.initialIngredients,
         ),
       ),
     );
@@ -159,7 +160,7 @@ class _QuestionPageState extends State<QuestionPage> {
         b['finalScore'].compareTo(a['finalScore']);
     if (scoreCompare != 0) return scoreCompare;
 
-    return a['missedIngredientCount']
+    return a['missedIngredientCount'] 
         .compareTo(b['missedIngredientCount']);
   });
 }

@@ -4,15 +4,23 @@ import 'spoonacular_service.dart';
 class ResultPage extends StatelessWidget {
   final List<dynamic> recipes;
   final SpoonacularService service;
+  final List<String> haveIngredients;
+  final List<String> needIngredients;
+  final List<String> initialIngredients;
 
   const ResultPage({
     super.key,
     required this.recipes,
     required this.service,
+    required this.haveIngredients,
+    required this.needIngredients,
+    required this.initialIngredients,
   });
 
   @override
   Widget build(BuildContext context) {
+    recipes.sort((a, b) =>
+        b['finalScore'].compareTo(a['finalScore']));
     return Scaffold(
       appBar: AppBar(title: const Text("Recipe for you")),
       body: ListView.builder(
@@ -21,14 +29,20 @@ class ResultPage extends StatelessWidget {
           final recipe = recipes[index];
           return ListTile(
             title: Text(recipe['title']),
-            subtitle: Column (
+            subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Text("⭐ Score: ${recipe['finalScore'].toStringAsFixed(2)}"),
+
                 Text(
-                  "✅ Used: ${recipe['usedIngredients'].map((i) => i['name']).join(', ')}",
+                  "✅ You have: ${haveIngredients.join(", ")}",
                 ),
+
                 Text(
-                  "❌ Missing: ${recipe['missedIngredients'].map((i) => i['name']).join(', ')}",
+                  "❌ You still need: ${recipe["missedIngredients"]
+                  .map((i) => i['name'])
+                  .join(", ")}",
+
                 ),
               ],
             ),
