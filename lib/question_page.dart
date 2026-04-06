@@ -80,7 +80,7 @@ class _QuestionPageState extends State<QuestionPage> {
 
     reRankRecipes(); //  THIS is the key
 
-    if (numQuestions >= 3) {
+    if (numQuestions >= 6) {
       bestRecipe = widget.recipes.first;
       goToRecipePage();
       return;
@@ -102,7 +102,7 @@ class _QuestionPageState extends State<QuestionPage> {
 
     reRankRecipes(); //  THIS is the key
 
-    if (numQuestions >= 3) {
+    if (numQuestions >= 6) {
       bestRecipe = widget.recipes.first;
       goToRecipePage();
       return;
