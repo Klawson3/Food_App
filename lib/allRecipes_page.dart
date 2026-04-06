@@ -35,17 +35,14 @@ class ResultPage extends StatelessWidget {
                 Text("⭐ Score: ${recipe['finalScore'].toStringAsFixed(2)}"),
 
                 Text(
-                  "✅ You have: ${recipe['usedIngredients']
-                      .where((i) => haveIngredients.contains(i['name']))
-                      .map((i) => i['name'])
-                      .join(', ')}",
+                  "✅ You have: ${haveIngredients.join(", ")}",
                 ),
 
                 Text(
-                  "❌ You still need: ${recipe['missedIngredients']
-                      .where((i) => !haveIngredients.contains(i['name']))
-                      .map((i) => i['name'])
-                      .join(', ')}",
+                  "❌ You still need: ${recipe["missedIngredients"]
+                  .map((i) => i['name'])
+                  .join(", ")}",
+
                 ),
               ],
             ),
