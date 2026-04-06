@@ -64,9 +64,21 @@ class _RecipePageState extends State<RecipePage> {
           ),
           const SizedBox(height: 10),
           ...have.map(
-            (ingredient) => Text(
-              "✅ $ingredient",
-              style: const TextStyle(fontSize: 16),
+            (ingredient) => Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Icon(Icons.check, size: 20, color: Colors.green),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      ingredient,
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
 
@@ -78,9 +90,21 @@ class _RecipePageState extends State<RecipePage> {
           ),
           const SizedBox(height: 10),
           ...need.map(
-            (ingredient) => Text(
-              "❌ $ingredient",
-              style: const TextStyle(fontSize: 16),
+            (ingredient) => Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Icon(Icons.cancel, size: 20, color: Colors.red),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      ingredient,
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
 
