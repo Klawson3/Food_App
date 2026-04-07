@@ -27,23 +27,23 @@ class ResultPage extends StatelessWidget {
         itemCount: recipes.length,
         itemBuilder: (context, index) {
           final recipe = recipes[index];
+          final recipeUsedNames = (recipe['usedIngredients'] as List)
+              .map((i) => i['name'] as String)
+              .toList();
+          final relevantHave = haveIngredients
+              .where((h) => recipeUsedNames.contains(h))
+              .toList();
+
           return ListTile(
             title: Text(recipe['title']),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text("⭐ Score: ${recipe['finalScore'].toStringAsFixed(2)}"),
-
-                Text(
-                  "✅ You have: ${haveIngredients.join(", ")}",
-                ),
-
-                Text(
-                  "❌ You still need: ${recipe["missedIngredients"]
-                  .map((i) => i['name'])
-                  .join(", ")}",
-
-                ),
+                Text("✅ You have: ${relevantHave.join(", ")}"),
+                Text("❌ You still need: ${recipe["missedIngredients"]
+                    .map((i) => i['name'])
+                    .join(", ")}"),
               ],
             ),
           );

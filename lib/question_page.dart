@@ -23,7 +23,7 @@ class _QuestionPageState extends State<QuestionPage> {
   int recipeIndex = 0;
   int ingredientIndex = 0;
   int numQuestions = 0; 
-  final int maxQuestions = 6;
+  final int maxRecipeIndex =3;
   Map<int, List<String>> recipeNeedMap = {};
 
 
@@ -35,11 +35,6 @@ class _QuestionPageState extends State<QuestionPage> {
     super.initState();
     haveIngredients = List<String>.from(widget.initialIngredients);
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (missedList.isEmpty) {
-        goToRecipePage();
-      }
-    });
   }
 
 
@@ -61,13 +56,24 @@ class _QuestionPageState extends State<QuestionPage> {
   }
 
   Future<void> goToRecipePage() async {
-    //find recipe with highest rank
-    recipeNeedMap[recipeIndex] = List.from(needIngredients);
+    if (!recipeNeedMap.containsKey(recipeIndex)) {
+      recipeNeedMap[recipeIndex] = List.from(needIngredients);
+    }
 
-    // Find the recipe with the least number of needed ingredients
-    int bestIndex = recipeNeedMap.entries
-      .reduce((a, b) => a.value.length <= b.value.length ? a : b)
-      .key;
+    // Find recipes with no missing ingredients
+    final perfect = recipeNeedMap.entries.where((e) => e.value.isEmpty).toList();
+    
+    int bestIndex;
+    if (perfect.isNotEmpty) {
+      bestIndex = perfect.first.key;
+    } else {
+      // prioritize recipes with fewer missing ingredients
+      bestIndex = recipeNeedMap.entries.reduce((a, b) {
+        int scoreA = widget.recipes[a.key]['usedIngredientCount'] - a.value.length;
+        int scoreB = widget.recipes[b.key]['usedIngredientCount'] - b.value.length;
+        return scoreA >= scoreB ? a : b;
+      }).key;
+    }
 
     final bestRecipe = widget.recipes[bestIndex];
     final details = await widget.service.getRecipeDetails(bestRecipe['id']);
@@ -78,7 +84,7 @@ class _QuestionPageState extends State<QuestionPage> {
         service: widget.service,
         bestRecipe: details,
         haveIngredients: haveIngredients,
-        needIngredients: needIngredients,
+        needIngredients: recipeNeedMap[bestIndex] ?? [],  
         recipes: widget.recipes,
       ),
     ));
@@ -87,16 +93,21 @@ class _QuestionPageState extends State<QuestionPage> {
 
   void moveToNextRecipe() {
     recipeNeedMap[recipeIndex] = List.from(needIngredients);
-  
-    if (recipeIndex < widget.recipes.length - 1) {
+
+    final lastNeed = recipeNeedMap[recipeIndex]!;
+    if (lastNeed.isEmpty) {
+        goToRecipePage();
+        return;
+    }
+
+    if (recipeIndex < maxRecipeIndex && recipeIndex < widget.recipes.length - 1) {
       setState(() {
         recipeIndex++;
         ingredientIndex = 0;
         needIngredients = [];
-        
       });
     } else {
-      goToRecipePage(); 
+      goToRecipePage();
     }
   }
 
@@ -110,17 +121,17 @@ class _QuestionPageState extends State<QuestionPage> {
 
     numQuestions++;
 
-    if (numQuestions >= maxQuestions) {
+    if (recipeIndex >= maxRecipeIndex) {
       goToRecipePage();
       return;
     }
 
-    setState(() {
-      if (ingredientIndex >= missedList.length - 1) {
+    if (ingredientIndex >= missedList.length - 1) {
         moveToNextRecipe(); // Move to the next recipe
-      } else {
-        ingredientIndex++;
-      }
+        return;
+    }
+    setState(() {
+      ingredientIndex++;
     });
   }
 
@@ -132,17 +143,16 @@ class _QuestionPageState extends State<QuestionPage> {
       needIngredients.add(ingredient);
     }
 
-    if (numQuestions >= maxQuestions) {
+    if (recipeIndex >= maxRecipeIndex) {
       goToRecipePage();
       return;
     }
-
+    if (ingredientIndex >= missedList.length - 1) {
+      moveToNextRecipe(); 
+      return;
+    }
     setState(() {
-      if (ingredientIndex >= missedList.length - 1) {
-        moveToNextRecipe(); 
-      } else {
-        ingredientIndex++;
-      }
+      ingredientIndex++;
     });
   }
   

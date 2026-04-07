@@ -43,10 +43,18 @@ class _RecipePageState extends State<RecipePage> {
   @override
   Widget build(BuildContext context) {
     final recipe = widget.bestRecipe;
-    final allIngredients = recipe['extendedIngredients'] as List;
     final have = widget.haveIngredients;
     final need = widget.needIngredients;
+
+    final originalRecipe = widget.recipes.firstWhere(
+      (r) => r['id'] == recipe['id'],
+      orElse: () => {},
+    );
     
+    final allIngredients = [
+      ...originalRecipe['usedIngredients'] ?? [],
+      ...originalRecipe['missedIngredients'] ?? [],
+    ];
 
     return Scaffold(
       appBar: AppBar(title: Text(recipe['title'])),
@@ -80,6 +88,6 @@ class _RecipePageState extends State<RecipePage> {
         ],
       ),
     ),
-    );
+  );
   }
 }
