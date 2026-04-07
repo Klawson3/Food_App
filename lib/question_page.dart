@@ -20,7 +20,6 @@ class QuestionPage extends StatefulWidget {
 }
 
 class _QuestionPageState extends State<QuestionPage> {
-  // int recipeIndex = 0;
   int ingredientIndex = 0;
   int numQuestions = 0;
 
@@ -53,17 +52,31 @@ class _QuestionPageState extends State<QuestionPage> {
     return missedList[ingredientIndex]['name'];
   }
 
-  void goToRecipePage() {
+  Future<void> goToRecipePage() async {
+    //find recipe with highest rank
+    final best = bestRecipe ?? widget.recipes.first;
+    final int recipeId = best['id'];
+
+    // Fetch recipe details
+    final details = await widget.service.getRecipeDetails(recipeId);
+
+    if (!mounted) return;
+
+    final updatedDetails = Map<String, dynamic>.from(details);
+
+    final allIngredients = [
+      ...(updatedDetails['extendedIngredients'] as List)
+    ];
+
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => RecipePage(
           service: widget.service,
           recipes: widget.recipes,
-          bestRecipe: bestRecipe ?? currentRecipe, //if bestRecipe is null, use currentRecipe
+          bestRecipe: details, //if bestRecipe is null, use currentRecipe
           haveIngredients: haveIngredients,
           needIngredients: needIngredients,
-          initialIngredients: widget.initialIngredients,
         ),
       ),
     );
@@ -163,6 +176,19 @@ class _QuestionPageState extends State<QuestionPage> {
     return a['missedIngredientCount'] 
         .compareTo(b['missedIngredientCount']);
   });
+}
+
+void checkIfPerfectMatch() {
+  final topRecipe = widget.recipes.first;
+  final missedList = topRecipe['missedIngredients'] as List;
+
+  bool allHave = missedList.every(
+    (ing) => haveIngredients.contains(ing['name'])
+  );
+  if (allHave) {
+    bestRecipe = topRecipe;
+    goToRecipePage();
+  }
 }
   
   @override

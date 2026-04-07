@@ -2,19 +2,19 @@ import 'package:flutter/material.dart';
 import 'spoonacular_service.dart';
 
 class ResultPage extends StatelessWidget {
-  final List<dynamic> recipes;
+  final Map<String, dynamic> bestRecipe;
   final SpoonacularService service;
+  final List<dynamic> recipes;
   final List<String> haveIngredients;
   final List<String> needIngredients;
-  final List<String> initialIngredients;
 
   const ResultPage({
     super.key,
-    required this.recipes,
     required this.service,
+    required this.bestRecipe,
+    required this.recipes,
     required this.haveIngredients,
     required this.needIngredients,
-    required this.initialIngredients,
   });
 
   @override
