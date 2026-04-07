@@ -20,176 +20,131 @@ class QuestionPage extends StatefulWidget {
 }
 
 class _QuestionPageState extends State<QuestionPage> {
+  int recipeIndex = 0;
   int ingredientIndex = 0;
-  int numQuestions = 0;
+  int numQuestions = 0; 
+  final int maxQuestions = 6;
+  Map<int, List<String>> recipeNeedMap = {};
+
 
   List<String> haveIngredients = [];
   List<String> needIngredients = [];
-
-  dynamic bestRecipe;
 
   @override
   void initState() {
     super.initState();
     haveIngredients = List<String>.from(widget.initialIngredients);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (missedList.isEmpty) {
+        goToRecipePage();
+      }
+    });
   }
+
 
   /*
   [getter] Acts like a variable but recalculates every time it's accessed
   When recipeIndex changes, currentRecipe automatically updates too
   */
-  dynamic get currentRecipe => widget.recipes.first;
+  dynamic get currentRecipe => widget.recipes[recipeIndex];
+
+  List get missedList => currentRecipe['missedIngredients'] ?? [];
   //[getter] Retrieve the ingredient name at "ingredientIndex" from current recipe's missing ingredients.
   String get currentIngredient {
-    List missedList = currentRecipe['missedIngredients'];
-
     if (missedList.isEmpty) return "no more ingredients";
 
     if (ingredientIndex >= missedList.length) {
-      ingredientIndex = 0;
+      return "no more ingredients";
     }
-
     return missedList[ingredientIndex]['name'];
   }
 
   Future<void> goToRecipePage() async {
     //find recipe with highest rank
-    final best = bestRecipe ?? widget.recipes.first;
-    final int recipeId = best['id'];
+    recipeNeedMap[recipeIndex] = List.from(needIngredients);
 
-    // Fetch recipe details
-    final details = await widget.service.getRecipeDetails(recipeId);
+    // Find the recipe with the least number of needed ingredients
+    int bestIndex = recipeNeedMap.entries
+      .reduce((a, b) => a.value.length <= b.value.length ? a : b)
+      .key;
+
+    final bestRecipe = widget.recipes[bestIndex];
+    final details = await widget.service.getRecipeDetails(bestRecipe['id']);
 
     if (!mounted) return;
-
-    final updatedDetails = Map<String, dynamic>.from(details);
-
-    final allIngredients = [
-      ...(updatedDetails['extendedIngredients'] as List)
-    ];
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => RecipePage(
-          service: widget.service,
-          recipes: widget.recipes,
-          bestRecipe: details, //if bestRecipe is null, use currentRecipe
-          haveIngredients: haveIngredients,
-          needIngredients: needIngredients,
-        ),
+    Navigator.push(context, MaterialPageRoute(
+      builder: (context) => RecipePage(
+        service: widget.service,
+        bestRecipe: details,
+        haveIngredients: haveIngredients,
+        needIngredients: needIngredients,
+        recipes: widget.recipes,
       ),
-    );
+    ));
   }
+
+
+  void moveToNextRecipe() {
+    recipeNeedMap[recipeIndex] = List.from(needIngredients);
+  
+    if (recipeIndex < widget.recipes.length - 1) {
+      setState(() {
+        recipeIndex++;
+        ingredientIndex = 0;
+        needIngredients = [];
+        
+      });
+    } else {
+      goToRecipePage(); 
+    }
+  }
+
 
   void onPressedYes() {
     final ingredient = currentIngredient;
-
+    
     if (!haveIngredients.contains(ingredient)) {
       haveIngredients.add(ingredient);
     }
 
     numQuestions++;
 
-    reRankRecipes(); //  THIS is the key
-
-    if (numQuestions >= 6) {
-      bestRecipe = widget.recipes.first;
+    if (numQuestions >= maxQuestions) {
       goToRecipePage();
       return;
     }
 
     setState(() {
-      ingredientIndex++;
+      if (ingredientIndex >= missedList.length - 1) {
+        moveToNextRecipe(); // Move to the next recipe
+      } else {
+        ingredientIndex++;
+      }
     });
   }
 
   void onPressedNo() {
     final ingredient = currentIngredient;
+    numQuestions++;
 
     if (!needIngredients.contains(ingredient)) {
       needIngredients.add(ingredient);
     }
 
-    numQuestions++;
-
-    reRankRecipes(); //  THIS is the key
-
-    if (numQuestions >= 6) {
-      bestRecipe = widget.recipes.first;
+    if (numQuestions >= maxQuestions) {
       goToRecipePage();
       return;
     }
 
     setState(() {
-      ingredientIndex++;
+      if (ingredientIndex >= missedList.length - 1) {
+        moveToNextRecipe(); 
+      } else {
+        ingredientIndex++;
+      }
     });
-}
-  void reRankRecipes() {
-  for (var recipe in widget.recipes) {
-    int used = recipe['usedIngredientCount'];
-    int missing = recipe['missedIngredientCount'];
-    int total = used + missing;
-
-    //  Base score (based on user input)
-    double matchScore =
-        widget.initialIngredients.isEmpty
-            ? 0
-            : used / widget.initialIngredients.length;
-
-    double complexityPenalty = total / 15;
-
-    double questionScore = 0;
-
-    List usedNames = (recipe['usedIngredients'] as List)
-        .map((e) => e['name'])
-        .toList();
-
-    List missedNames = (recipe['missedIngredients'] as List)
-        .map((e) => e['name'])
-        .toList();
-
-    //  Reward ingredients user HAS
-    for (var ing in haveIngredients) {
-      if (usedNames.contains(ing)) {
-        questionScore += 0.3;
-      }
-    }
-
-    //  Penalize ingredients user DOESN’T HAVE
-    for (var ing in needIngredients) {
-      if (missedNames.contains(ing)) {
-        questionScore -= 0.5;
-      }
-    }
-
-    recipe['finalScore'] =
-        matchScore - complexityPenalty + questionScore;
   }
-
-  //  Sort recipes AFTER updating scores
-  widget.recipes.sort((a, b) {
-    int scoreCompare =
-        b['finalScore'].compareTo(a['finalScore']);
-    if (scoreCompare != 0) return scoreCompare;
-
-    return a['missedIngredientCount'] 
-        .compareTo(b['missedIngredientCount']);
-  });
-}
-
-void checkIfPerfectMatch() {
-  final topRecipe = widget.recipes.first;
-  final missedList = topRecipe['missedIngredients'] as List;
-
-  bool allHave = missedList.every(
-    (ing) => haveIngredients.contains(ing['name'])
-  );
-  if (allHave) {
-    bestRecipe = topRecipe;
-    goToRecipePage();
-  }
-}
   
   @override
   Widget build(BuildContext context) {
