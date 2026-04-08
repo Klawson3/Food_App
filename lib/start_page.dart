@@ -14,10 +14,11 @@ class StartPage extends StatelessWidget {
         children: [
           //Background
           Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage("assets/food_bg.jpg"),
-                fit: BoxFit.cover,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Color(0xFFFFD6F0), Color(0xFFD8B4FF),],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
               ),
             ),
           ),
