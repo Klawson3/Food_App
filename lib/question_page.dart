@@ -76,6 +76,7 @@ class _QuestionPageState extends State<QuestionPage> {
     final details = await widget.service.getRecipeDetails(bestRecipe['id']);
 
     if (!mounted) return;
+
     Navigator.push(context, MaterialPageRoute(
       builder: (context) => RecipePage(
         service: widget.service,

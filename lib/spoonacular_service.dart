@@ -40,7 +40,7 @@ class SpoonacularService {
         total == 0 ? 0 : used / total;
 
     //  Penalize large recipes
-    double complexityPenalty = total / 15; // tweakable
+    double complexityPenalty = total / 30; // tweakable
 
   recipe['finalScore'] = matchScore - complexityPenalty;
 }
