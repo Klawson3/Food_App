@@ -32,14 +32,20 @@ class ResultPage extends StatelessWidget {
           final recipeUsedNames = (recipe['usedIngredients'] as List)
               .map((i) => i['name'] as String)
               .toList();
+
+          print('recipeUsedNames: $recipeUsedNames');
+          print('haveIngredients: $haveIngredients');
+          print('recipeNeedMap: $recipeNeedMap');
+          
+          final recipeAllNames = [
+            ...(recipe['usedIngredients'] as List).map((i) => i['name'] as String),
+            ...(recipe['missedIngredients'] as List).map((i) => i['name'] as String),
+          ];
+
           final relevantHave = haveIngredients
-              .where((h) => recipeUsedNames.any((name) => 
+              .where((h) => recipeAllNames.any((name) => 
                   name.contains(h) || h.contains(name ?? '')))
               .toList();
-          final recipeEntry = recipeNeedMap.entries.firstWhere(
-            (e) => recipes[e.key]['id'] == recipe['id'],
-            orElse: () => MapEntry(0, []),
-          );
             
           return ListTile(
             title: Text(recipe['title']),
