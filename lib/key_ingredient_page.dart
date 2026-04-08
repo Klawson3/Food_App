@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:food_app/spoonacular_service.dart';
 import 'question_page.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class IngredientPage extends StatefulWidget {
   final String diet;
@@ -52,7 +53,11 @@ class _IngredientPageState extends State<IngredientPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Enter Main Ingredient"),
+        title: Text("Enter Main Ingredient",
+        style: GoogleFonts.nunito(
+            fontSize: 30,
+            color: Colors.deepPurpleAccent,
+        ),),
       ),
 
       body: Column(
