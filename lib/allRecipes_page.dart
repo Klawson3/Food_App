@@ -33,10 +33,6 @@ class ResultPage extends StatelessWidget {
               .map((i) => i['name'] as String)
               .toList();
 
-          print('recipeUsedNames: $recipeUsedNames');
-          print('haveIngredients: $haveIngredients');
-          print('recipeNeedMap: $recipeNeedMap');
-          
           final recipeAllNames = [
             ...(recipe['usedIngredients'] as List).map((i) => i['name'] as String),
             ...(recipe['missedIngredients'] as List).map((i) => i['name'] as String),

@@ -22,10 +22,8 @@ class QuestionPage extends StatefulWidget {
 class _QuestionPageState extends State<QuestionPage> {
   int recipeIndex = 0;
   int ingredientIndex = 0;
-  int numQuestions = 0; 
   final int maxRecipeIndex =3;
   Map<int, List<String>> recipeNeedMap = {};
-
 
   List<String> haveIngredients = [];
   List<String> needIngredients = [];
@@ -34,10 +32,7 @@ class _QuestionPageState extends State<QuestionPage> {
   void initState() {
     super.initState();
     haveIngredients = List<String>.from(widget.initialIngredients);
-
   }
-
-
   /*
   [getter] Acts like a variable but recalculates every time it's accessed
   When recipeIndex changes, currentRecipe automatically updates too
@@ -56,18 +51,20 @@ class _QuestionPageState extends State<QuestionPage> {
   }
 
   Future<void> goToRecipePage() async {
+    // store the missing ingredients, labeled by recipe index
     if (!recipeNeedMap.containsKey(recipeIndex)) {
       recipeNeedMap[recipeIndex] = List.from(needIngredients);
     }
 
-    // Find recipes with no missing ingredients
+    // Find perfect recipe
     final perfect = recipeNeedMap.entries.where((e) => e.value.isEmpty).toList();
-    
+
+    // Find the most matched recipe
     int bestIndex;
     if (perfect.isNotEmpty) {
       bestIndex = perfect.first.key;
     } else {
-      // prioritize recipes with fewer missing ingredients
+      // prioritize recipes with higher score (fewer missing, relative more used)
       bestIndex = recipeNeedMap.entries.reduce((a, b) {
         int scoreA = widget.recipes[a.key]['usedIngredientCount'] - a.value.length;
         int scoreB = widget.recipes[b.key]['usedIngredientCount'] - b.value.length;
@@ -91,7 +88,6 @@ class _QuestionPageState extends State<QuestionPage> {
     ));
   }
 
-
   void moveToNextRecipe() {
     recipeNeedMap[recipeIndex] = List.from(needIngredients);
 
@@ -112,15 +108,12 @@ class _QuestionPageState extends State<QuestionPage> {
     }
   }
 
-
   void onPressedYes() {
     final ingredient = currentIngredient;
     
     if (!haveIngredients.contains(ingredient)) {
       haveIngredients.add(ingredient);
     }
-
-    numQuestions++;
 
     if (recipeIndex >= maxRecipeIndex) {
       goToRecipePage();
@@ -138,7 +131,6 @@ class _QuestionPageState extends State<QuestionPage> {
 
   void onPressedNo() {
     final ingredient = currentIngredient;
-    numQuestions++;
 
     if (!needIngredients.contains(ingredient)) {
       needIngredients.add(ingredient);
@@ -168,7 +160,7 @@ class _QuestionPageState extends State<QuestionPage> {
         Text("Do you have $currentIngredient?"),
         const SizedBox(height: 25),
         ElevatedButton(onPressed: onPressedYes, child: const Text("Yes")),
-        const SizedBox(height: 10),
+        const SizedBox(height: 25),
         ElevatedButton(onPressed: onPressedNo, child: const Text("No")),
       ],)
       )
