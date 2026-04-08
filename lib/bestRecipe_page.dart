@@ -4,20 +4,21 @@ import 'allRecipes_page.dart';
 
 class RecipePage extends StatefulWidget {
   final SpoonacularService service;
-  final List<dynamic> recipes;
   final Map<String, dynamic> bestRecipe;
   final List<String> haveIngredients;
   final List<String> needIngredients;
-  final List<String> initialIngredients;
+  final List<dynamic> recipes;
+  final Map<int, List<String>> recipeNeedMap;
+
   //constructor
   const RecipePage({
     super.key,
     required this.service,
-    required this.recipes,
     required this.bestRecipe,
     required this.haveIngredients,
     required this.needIngredients,
-    required this.initialIngredients,
+    required this.recipes,
+    required this.recipeNeedMap,
   });
 
   @override
@@ -31,11 +32,12 @@ class _RecipePageState extends State<RecipePage> {
       context,
       MaterialPageRoute(
         builder: (context) => ResultPage(
-          recipes: widget.recipes,
           service: widget.service,
+          bestRecipe: widget.bestRecipe,
+          recipes: widget.recipes,
           haveIngredients: widget.haveIngredients,
           needIngredients: widget.needIngredients,
-          initialIngredients: widget.initialIngredients,
+          recipeNeedMap: widget.recipeNeedMap,
         ),
       ),
     );
@@ -46,48 +48,49 @@ class _RecipePageState extends State<RecipePage> {
     final recipe = widget.bestRecipe;
     final have = widget.haveIngredients;
     final need = widget.needIngredients;
+
+    final originalRecipe = widget.recipes.firstWhere(
+      (r) => r['id'] == recipe['id'],
+      orElse: () => {},
+    );
     
+    final allIngredients = [
+      ...originalRecipe['usedIngredients'] ?? [],
+      ...originalRecipe['missedIngredients'] ?? [],
+    ];
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Your Best Recipe")),
-      body: Padding(padding: const EdgeInsets.all(25),
-      child: ListView(
-        children: [
-          Text(
-            recipe['title'],
-            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 20),
-          const Text(
-            "Ingredients you have:",
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 10),
-          ...have.map(
-            (ingredient) => Text(
-              "✅ $ingredient",
-              style: const TextStyle(fontSize: 16),
-            ),
-          ),
-
-          const SizedBox(height: 20),
-
-          const Text(
-            "Ingredients you need:",
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 10),
-          ...need.map(
-            (ingredient) => Text(
-              "❌ $ingredient",
-              style: const TextStyle(fontSize: 16),
-            ),
-          ),
-
+      appBar: AppBar(title: Text(recipe['title'])),
+      body: Padding(
+        padding: const EdgeInsets.all(25),
+        child: ListView(
+          children: [
+            ...allIngredients.map((i) {
+              final name = i ['name'];
+              if (have.contains(name)) {
+                return Row(children: [
+                  const Icon(Icons.check, color: Colors.green),
+                  const SizedBox(width: 10),
+                  Text(name),
+                ]);
+              } else if (need.contains(name)) {
+              return Row(children: [
+                const Icon(Icons.cancel, color: Colors.red),
+                const SizedBox(width: 10),
+                Text(name),
+              ]);
+            } else {
+              return Row(children: [
+                const Icon(Icons.circle, size: 8),
+                const SizedBox(width: 10),
+                Text(name),
+              ]);
+            }
+          }),
           ElevatedButton(onPressed: seeMore, child: const Text("See More")),
         ],
       ),
     ),
-    );
+  );
   }
 }

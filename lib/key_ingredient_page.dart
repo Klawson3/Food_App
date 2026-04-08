@@ -52,7 +52,7 @@ class _IngredientPageState extends State<IngredientPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Enter Main Ingredients"),
+        title: const Text("Enter Main Ingredient"),
       ),
 
       body: Column(
