@@ -7,6 +7,7 @@ class ResultPage extends StatelessWidget {
   final List<dynamic> recipes;
   final List<String> haveIngredients;
   final List<String> needIngredients;
+  final Map<int, List<String>> recipeNeedMap;
 
   const ResultPage({
     super.key,
@@ -15,6 +16,7 @@ class ResultPage extends StatelessWidget {
     required this.recipes,
     required this.haveIngredients,
     required this.needIngredients,
+    required this.recipeNeedMap,
   });
 
   @override
@@ -31,9 +33,14 @@ class ResultPage extends StatelessWidget {
               .map((i) => i['name'] as String)
               .toList();
           final relevantHave = haveIngredients
-              .where((h) => recipeUsedNames.contains(h))
+              .where((h) => recipeUsedNames.any((name) => 
+                  name.contains(h) || h.contains(name ?? '')))
               .toList();
-
+          final recipeEntry = recipeNeedMap.entries.firstWhere(
+            (e) => recipes[e.key]['id'] == recipe['id'],
+            orElse: () => MapEntry(0, []),
+          );
+            
           return ListTile(
             title: Text(recipe['title']),
             subtitle: Column(

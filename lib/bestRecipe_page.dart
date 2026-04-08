@@ -8,6 +8,7 @@ class RecipePage extends StatefulWidget {
   final List<String> haveIngredients;
   final List<String> needIngredients;
   final List<dynamic> recipes;
+  final Map<int, List<String>> recipeNeedMap;
 
   //constructor
   const RecipePage({
@@ -17,6 +18,7 @@ class RecipePage extends StatefulWidget {
     required this.haveIngredients,
     required this.needIngredients,
     required this.recipes,
+    required this.recipeNeedMap,
   });
 
   @override
@@ -35,6 +37,7 @@ class _RecipePageState extends State<RecipePage> {
           recipes: widget.recipes,
           haveIngredients: widget.haveIngredients,
           needIngredients: widget.needIngredients,
+          recipeNeedMap: widget.recipeNeedMap,
         ),
       ),
     );

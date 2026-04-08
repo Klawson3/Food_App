@@ -84,8 +84,9 @@ class _QuestionPageState extends State<QuestionPage> {
         service: widget.service,
         bestRecipe: details,
         haveIngredients: haveIngredients,
-        needIngredients: recipeNeedMap[bestIndex] ?? [],  
+        needIngredients: recipeNeedMap[bestIndex] ?? [], 
         recipes: widget.recipes,
+        recipeNeedMap: recipeNeedMap,
       ),
     ));
   }
