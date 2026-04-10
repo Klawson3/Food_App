@@ -55,10 +55,23 @@ class _RecipePageState extends State<RecipePage> {
       orElse: () => {},
     );
     
-    final allIngredients = [
+    final usedAndMissed = [
       ...originalRecipe['usedIngredients'] ?? [],
       ...originalRecipe['missedIngredients'] ?? [],
     ];
+
+    final usedAndMissedNames = usedAndMissed.map((i) => i['name'].toString().toLowerCase()).toSet();
+
+    final extendedIngredients = recipe['extendedIngredients'] as List? ?? [];
+
+    final extraHave = have.where((h) =>
+      !usedAndMissedNames.contains(h.toLowerCase()) &&
+      extendedIngredients.any((ing) =>
+        ing['name'].toString().toLowerCase().contains(h.toLowerCase())
+      )
+    ).map((h) => {'name': h}).toList();
+
+    final allIngredients = [...extraHave, ...usedAndMissed];
 
     return Scaffold(
       appBar: AppBar(title: Text(recipe['title'])),

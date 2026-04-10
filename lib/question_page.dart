@@ -27,11 +27,13 @@ class _QuestionPageState extends State<QuestionPage> {
 
   List<String> haveIngredients = [];
   List<String> needIngredients = [];
+  Set<String> askedIngredients = {};
 
   @override
   void initState() {
     super.initState();
     haveIngredients = List<String>.from(widget.initialIngredients);
+    askedIngredients = Set<String>.from(widget.initialIngredients);
   }
   /*
   [getter] Acts like a variable but recalculates every time it's accessed
@@ -42,13 +44,15 @@ class _QuestionPageState extends State<QuestionPage> {
   List get missedList => currentRecipe['missedIngredients'] ?? [];
   //[getter] Retrieve the ingredient name at "ingredientIndex" from current recipe's missing ingredients.
   String get currentIngredient {
-    if (missedList.isEmpty) return "no more ingredients";
-
-    if (ingredientIndex >= missedList.length) {
-      return "no more ingredients";
+    for (int i = ingredientIndex; i < missedList.length; i++) {
+      final name = missedList[i]['name'] as String;
+      if (!askedIngredients.contains(name)) {
+        ingredientIndex = i; // jump to first un-asked ingredient
+        return name;
+      }
     }
-    return missedList[ingredientIndex]['name'];
-  }
+    return "no more ingredients";
+}
 
   Future<void> goToRecipePage() async {
     // store the missing ingredients, labeled by recipe index
@@ -111,6 +115,7 @@ class _QuestionPageState extends State<QuestionPage> {
 
   void onPressedYes() {
     final ingredient = currentIngredient;
+    askedIngredients.add(ingredient);
     
     if (!haveIngredients.contains(ingredient)) {
       haveIngredients.add(ingredient);
@@ -132,6 +137,7 @@ class _QuestionPageState extends State<QuestionPage> {
 
   void onPressedNo() {
     final ingredient = currentIngredient;
+    askedIngredients.add(ingredient); 
 
     if (!needIngredients.contains(ingredient)) {
       needIngredients.add(ingredient);
