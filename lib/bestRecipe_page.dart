@@ -66,9 +66,12 @@ class _RecipePageState extends State<RecipePage> {
 
     final extraHave = have.where((h) =>
       !usedAndMissedNames.contains(h.toLowerCase()) &&
-      extendedIngredients.any((ing) =>
-        ing['name'].toString().toLowerCase().contains(h.toLowerCase())
-      )
+      !usedAndMissed.any((i) =>                         
+          i['name'].toString().toLowerCase().contains(h.toLowerCase())
+        ) &&
+        extendedIngredients.any((ing) =>
+          ing['name'].toString().toLowerCase().contains(h.toLowerCase())
+        )
     ).map((h) => {'name': h}).toList();
 
     final allIngredients = [...extraHave, ...usedAndMissed];
@@ -81,7 +84,7 @@ class _RecipePageState extends State<RecipePage> {
           children: [
             ...allIngredients.map((i) {
               final name = i ['name'];
-              if (have.contains(name)) {
+              if (have.any((h) => name.contains(h) || h.contains(name))) {
                 return Row(children: [
                   const Icon(Icons.check, color: Colors.green),
                   const SizedBox(width: 10),
