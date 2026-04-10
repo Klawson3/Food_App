@@ -56,13 +56,9 @@ class ResultPage extends StatelessWidget {
           }
 
           recipes.sort((a, b) {
-            int scoreCompare =
-                  b['finalScore'].compareTo(a['finalScore']);
-              if (scoreCompare != 0) return scoreCompare;
-
-              // Tie-breaker,  fewer missing ingredients
-              return a['missedIngredientCount']
-                  .compareTo(b['missedIngredientCount']);
+            int scoreCompare = b['finalScore'].compareTo(a['finalScore']);
+            if (scoreCompare != 0) return scoreCompare;
+            return a['missedIngredientCount'].compareTo(b['missedIngredientCount']);
           });
 
           return ListTile(
