@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'key_ingredient_page.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class DietSelectionPage extends StatefulWidget {
   const DietSelectionPage({super.key});
@@ -12,20 +13,25 @@ class _DietSelectionPageState extends State<DietSelectionPage> {
   String? selectedDiet;
 
   final List<String> diets = [
+    "None",
     "Vegan",
     "Vegetarian",
     "Keto",
     "High Protein",
     "Paleo",
     "Gluten-Free",
-    "None"
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Select Your Diet"),
+        title: Text(
+          "Select Your Diet",
+          style: GoogleFonts.nunito(
+            fontSize: 30,
+            color: Colors.deepPurpleAccent,
+          )),
       ),
 
       body: Column(
