@@ -11,6 +11,11 @@ class RecipeDetailPage extends StatelessWidget {
   });
 
   @override
+/// Builds a recipe detail page with ingredients and instructions.
+///
+/// The page shows the title of the recipe in the app bar, and a list of
+/// ingredients and instructions in the body. If there are no instructions
+/// available, it will show a message saying "No instructions available".
   Widget build(BuildContext context) {
     final ingredients = details['extendedIngredients'] ?? [];
     final instructions = details['instructions']?.toString().replaceAll(RegExp(r'<[^>]*>'), '') 
@@ -22,6 +27,22 @@ class RecipeDetailPage extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: ListView(
           children: [
+            Image.network(recipe['image']),
+            const SizedBox(height: 20),
+            
+            if (recipe['image'] != null)
+              Image.network(recipe['image']),
+            Text(
+              "⏱️ ${details['readyInMinutes'] ?? 'N/A'} minutes",
+              style: const TextStyle(fontSize: 16),
+            ),
+
+            Text(
+              "🍽️ Servings: ${details['servings'] ?? 'N/A'}",
+              style: const TextStyle(fontSize: 16),
+            ),
+
+            const SizedBox(height: 15),
             const Text("Ingredients:",
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
 

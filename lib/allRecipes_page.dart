@@ -85,6 +85,14 @@ class _ResultPageState extends State<ResultPage> {
   }
 
   @override
+/// Builds a Scaffold with an AppBar and a ListView of ListTile
+/// Each ListTile represents a recipe, with the title being the name of the
+/// recipe and the subtitle being a Column with the following children:
+/// - A Row with an amber star icon and the final score of the recipe
+/// - A Row with a green checkmark icon and the relevant ingredients the user has
+/// - If the user still needs some ingredients, a Row with a red close icon and
+///   the relevant ingredients the user still needs. When tapped, navigates to
+///   the RecipeDetailPage with the recipe and its details.
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Recipe for you")),
