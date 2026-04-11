@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'spoonacular_service.dart';
-
+import 'recipe_detail_page.dart';
 class ResultPage extends StatefulWidget {
   final Map<String, dynamic> bestRecipe;
   final SpoonacularService service;
@@ -98,6 +98,21 @@ class _ResultPageState extends State<ResultPage> {
 
           return ListTile(
             title: Text(recipe['title']),
+
+              onTap: () async {
+                final details =
+                  await widget.service.getRecipeDetails(recipe['id']);
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => RecipeDetailPage(
+                      recipe: recipe,
+                      details: details,
+                    ),
+                  ),
+                );
+              },
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
