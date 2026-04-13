@@ -38,7 +38,7 @@ class RecipeDetailPage extends StatelessWidget {
             ),
 
             Text(
-              "🍽️ Servings: ${details['servings'] ?? 'N/A'}",
+              "🍽️ Serving Size: ${details['servings'] ?? 'N/A'}",
               style: const TextStyle(fontSize: 16),
             ),
 
