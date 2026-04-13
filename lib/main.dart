@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'diet_selection_page.dart';
 import 'start_page.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'app_colors.dart'; // UI UPDATE: Imported central color hub
 
 void main() {
   runApp(const MyApp());
@@ -17,10 +18,22 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'FoodApp Demo',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        textTheme: GoogleFonts.nunitoTextTheme(),
-        colorScheme: .fromSeed(seedColor: Colors.deepPurple),
+        // UI UPDATE: Applied Feta White as the default background for all screens
+        scaffoldBackgroundColor: AppColors.fetaWhite, 
+        
+        // UI UPDATE: Mapped the "Salad" palette to the global Material ColorScheme
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: AppColors.crispLettuce,
+          primary: AppColors.deepSpinach,
+          secondary: AppColors.carrotOrange,
+          surface: AppColors.fetaWhite,
+        ),
+        
+        // UI UPDATE: Tinted the existing Nunito font with Peppercorn black
+        textTheme: GoogleFonts.nunitoTextTheme().apply(
+          bodyColor: AppColors.peppercorn,
+          displayColor: AppColors.deepSpinach,
+        ),
       ),
       home: const StartPage(),
     );
@@ -81,20 +94,8 @@ class _MyHomePageState extends State<MyHomePage> {
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
         child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: .center,
+          // UI UPDATE: explicitly defined MainAxisAlignment
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text('You have pushed the button this many times:'),
             Text(
@@ -104,6 +105,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
+      // UI UPDATE: The FloatingActionButton will now automatically use the theme's colors!
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
         tooltip: 'Increment',
@@ -123,7 +125,7 @@ class _MyHomePageState extends State<MyHomePage> {
 //   Widget build(BuildContext context) {
 //     return const MaterialApp(
 //       home: SpoonTestPage(),
-//     );0
+//     );
 //   }
 // }
 
@@ -179,4 +181,4 @@ class _MyHomePageState extends State<MyHomePage> {
 //             ),
 //     );
 //   }
-// } 
+// }
