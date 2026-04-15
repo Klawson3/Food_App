@@ -131,6 +131,7 @@ class _DietSelectionPageState extends State<DietSelectionPage> {
             );
           },
         ),
+        
       ),
     );
   }
