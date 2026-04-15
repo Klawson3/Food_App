@@ -42,7 +42,7 @@ class StartPage extends StatelessWidget {
                 FadeInDown(
                   duration: const Duration(milliseconds: 800),
                   child: Text(
-                    "FoodieAI",
+                    "Cook4U",
                     style: GoogleFonts.nunito(
                       fontSize: 60,
                       // UI UPDATE: Applied Deep Spinach to the title
