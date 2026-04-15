@@ -11,7 +11,6 @@ class RecipePage extends StatefulWidget {
   final List<dynamic> recipes;
   final Map<int, List<String>> recipeNeedMap;
 
-  //constructor
   const RecipePage({
     super.key,
     required this.service,
@@ -45,19 +44,21 @@ class _RecipePageState extends State<RecipePage> {
   }
 
   void cookRecipe() async {
-    final details = 
-      await widget.service.getRecipeDetails(widget.bestRecipe['id']);
+    final details =
+        await widget.service.getRecipeDetails(widget.bestRecipe['id']);
+
     if (!mounted) return;
 
     Navigator.push(
-      context, 
+      context,
       MaterialPageRoute(
         builder: (context) => RecipeDetailPage(
-          recipe: widget.bestRecipe, 
-          details: details,),),
+          recipe: widget.bestRecipe,
+          details: details,
+        ),
+      ),
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -69,50 +70,59 @@ class _RecipePageState extends State<RecipePage> {
       (r) => r['id'] == recipe['id'],
       orElse: () => {},
     );
-    
+
     final usedAndMissed = [
-      ...originalRecipe['usedIngredients'] ?? [],
-      ...originalRecipe['missedIngredients'] ?? [],
+      ...(originalRecipe['usedIngredients'] ?? []),
+      ...(originalRecipe['missedIngredients'] ?? []),
     ];
 
-    final usedAndMissedNames = usedAndMissed.map((i) => i['name'].toString().toLowerCase()).toSet();
+    final usedAndMissedNames =
+        usedAndMissed.map((i) => i['name'].toString().toLowerCase()).toSet();
 
-    final extendedIngredients = recipe['extendedIngredients'] as List? ?? [];
+    final extendedIngredients =
+        recipe['extendedIngredients'] as List? ?? [];
 
     final extraHave = have.where((h) =>
-      !usedAndMissedNames.contains(h.toLowerCase()) &&
-      !usedAndMissed.any((i) =>                         
-          i['name'].toString().toLowerCase().contains(h.toLowerCase())
-        ) &&
+        !usedAndMissedNames.contains(h.toLowerCase()) &&
+        !usedAndMissed.any((i) =>
+            i['name'].toString().toLowerCase().contains(h.toLowerCase())) &&
         extendedIngredients.any((ing) =>
-          ing['name'].toString().toLowerCase().contains(h.toLowerCase())
-        )
-    ).map((h) => {'name': h}).toList();
+            ing['name'].toString().toLowerCase().contains(h.toLowerCase())))
+        .map((h) => {'name': h})
+        .toList();
 
     final allIngredients = [...extraHave, ...usedAndMissed];
 
     return Scaffold(
-      appBar: AppBar(title: Text(recipe['title'])),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            // make image rounded square
-            if (recipe['image'] != null)
-              ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: AspectRatio(
-                  aspectRatio: 1,
-                  child: Image.network(recipe['image'],
-                  fit: BoxFit.cover, ),
+      appBar: AppBar(
+        title: Text(recipe['title'] ?? "Best Recipe Match"),
+      ),
+
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+
+              // IMAGE
+              if (recipe['image'] != null)
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: AspectRatio(
+                    aspectRatio: 1,
+                    child: Image.network(
+                      recipe['image'],
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ),
-              ),
 
-              const SizedBox(height:20),
+              const SizedBox(height: 20),
 
+              // RECIPE TITLE
               Text(
-                recipe['title']?? "Recipe",
+                recipe['title'] ?? "",
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: 22,
@@ -122,99 +132,99 @@ class _RecipePageState extends State<RecipePage> {
 
               const SizedBox(height: 10),
 
+              // SCORE
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.timer, size: 18),
+                  const Icon(Icons.star, color: Colors.amber, size: 18),
                   const SizedBox(width: 5),
-                  Text("${recipe['readyInMinutes'] ?? 'N/A'} minutes"),
-                  const SizedBox(width: 20),
-                  const Icon(Icons.restaurant, size: 18),
-                  const SizedBox(width: 5),
-                  Text("${recipe['servings'] ?? 'N/A'} servings"),
-              ]),
-              
+                  Text(
+                    (recipe['rating'] is num)
+                        ? (recipe['rating'] as num).toStringAsFixed(2)
+                        : "",
+                  ),
+                ],
+              ),
 
               const SizedBox(height: 20),
 
-              Align (
+              //INGREDIENT TITLE
+              Align(
                 alignment: Alignment.centerLeft,
                 child: const Text(
                   "Ingredients:",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-            ),
-
-            const SizedBox(height: 10),
-
-            //Wrap text
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: have.map<Widget>((ingredient) => Chip(
-                label: Text(ingredient),
-                backgroundColor: Colors.green.shade100,
-              )).toList(),
-            ),
-
-            const Spacer(),
-
-            Column(
-              children: [
-                //cook button
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: cookRecipe, 
-                    child: const Text("Cook"),),
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
+              ),
 
-                const SizedBox(height: 10),
-                // see more recipes
-                SizedBox(
-            width: double.infinity,
-            child: OutlinedButton(
-              onPressed: seeMore,
-              child: const Text("See More Recipes"),
-            ),
-          ),
-        ],
-      ),
+              const SizedBox(height: 10),
 
-            ...allIngredients.map((i) {
-              final name = i ['name'];
-              if (have.any((h) => name.contains(h) || h.contains(name))) {
-                return Row(children: [
-                  const Icon(Icons.check, color: Colors.green),
-                  const SizedBox(width: 10),
-                  Text(name),
-                ]);
-              } else if (need.contains(name)) {
-              return Row(children: [
-                const Icon(Icons.cancel, color: Colors.red),
-                const SizedBox(width: 10),
-                Text(name),
-              ]);
-            } else {
-              return Row(children: [
-                const Icon(Icons.circle, size: 8),
-                const SizedBox(width: 10),
-                Text(name),
-              ]);
-            }
-          }),
-          const SizedBox(height: 20),
-          const Text("Instructions:",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 8),
-          Text(
-            recipe['instructions']?.toString().replaceAll(RegExp(r'<[^>]*>'), '')
-                ?? "No instructions available",
+              // INGREDIENT LIST
+              Column(
+                children: allIngredients.map<Widget>((i) {
+                  final name = i['name'];
+
+                  final isHave = have.any(
+                    (h) => name
+                        .toString()
+                        .toLowerCase()
+                        .contains(h.toLowerCase()),
+                  );
+
+                  final isNeed = need.contains(name);
+
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: Row(
+                      children: [
+                        Icon(
+                          isHave
+                              ? Icons.check
+                              : isNeed
+                                  ? Icons.cancel
+                                  : Icons.circle,
+                          color: isHave
+                              ? Colors.green
+                              : isNeed
+                                  ? Colors.red
+                                  : Colors.grey,
+                          size: 16,
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(child: Text(name.toString())),
+                      ],
+                    ),
+                  );
+                }).toList(),
+              ),
+
+              const SizedBox(height: 30),
+
+              // BUTTONS
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: cookRecipe,
+                  child: const Text("Cook"),
+                ),
+              ),
+
+              const SizedBox(height: 10),
+
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton(
+                  onPressed: seeMore,
+                  child: const Text("See More Recipes"),
+                ),
+              ),
+            ],
           ),
-          ElevatedButton(onPressed: seeMore, child: const Text("See More")),
-        ],
+        ),
       ),
-    ),
-  );
+    );
   }
 }
