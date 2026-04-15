@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'spoonacular_service.dart';
 import 'allRecipes_page.dart';
+import 'recipe_detail_page.dart';
 
 class RecipePage extends StatefulWidget {
   final SpoonacularService service;
@@ -43,6 +44,20 @@ class _RecipePageState extends State<RecipePage> {
     );
   }
 
+  void cookRecipe() async {
+    final details = 
+      await widget.service.getRecipeDetails(widget.bestRecipe['id']);
+    if (!mounted) return;
+
+    Navigator.push(
+      context, 
+      MaterialPageRoute(
+        builder: (context) => RecipeDetailPage(
+          recipe: widget.bestRecipe, 
+          details: details,),),
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -79,27 +94,92 @@ class _RecipePageState extends State<RecipePage> {
     return Scaffold(
       appBar: AppBar(title: Text(recipe['title'])),
       body: Padding(
-        padding: const EdgeInsets.all(25),
-        child: ListView(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            // make image rounded square
             if (recipe['image'] != null)
-              Image.network(recipe['image']),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: AspectRatio(
+                  aspectRatio: 1,
+                  child: Image.network(recipe['image'],
+                  fit: BoxFit.cover, ),
+                ),
+              ),
 
-              Row(children: [
-                const Icon(Icons.timer, size: 16),
-                const SizedBox(width: 6),
-                Text("${recipe['readyInMinutes'] ?? 'N/A'} minutes"),
-              ]),
-              Row(children: [
-                const Icon(Icons.restaurant, size: 16),
-                const SizedBox(width: 6),
-                Text("Serving Size: ${recipe['servings'] ?? 'N/A'}"),
-              ]),
+              const SizedBox(height:20),
 
-              const SizedBox(height: 15),
-              const Text("Ingredients:",
+              Text(
+                recipe['title']?? "Recipe",
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+
+              const SizedBox(height: 10),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.timer, size: 18),
+                  const SizedBox(width: 5),
+                  Text("${recipe['readyInMinutes'] ?? 'N/A'} minutes"),
+                  const SizedBox(width: 20),
+                  const Icon(Icons.restaurant, size: 18),
+                  const SizedBox(width: 5),
+                  Text("${recipe['servings'] ?? 'N/A'} servings"),
+              ]),
+              
+
+              const SizedBox(height: 20),
+
+              Align (
+                alignment: Alignment.centerLeft,
+                child: const Text(
+                  "Ingredients:",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
+            ),
+
+            const SizedBox(height: 10),
+
+            //Wrap text
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: have.map<Widget>((ingredient) => Chip(
+                label: Text(ingredient),
+                backgroundColor: Colors.green.shade100,
+              )).toList(),
+            ),
+
+            const Spacer(),
+
+            Column(
+              children: [
+                //cook button
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: cookRecipe, 
+                    child: const Text("Cook"),),
+                ),
+
+                const SizedBox(height: 10),
+                // see more recipes
+                SizedBox(
+            width: double.infinity,
+            child: OutlinedButton(
+              onPressed: seeMore,
+              child: const Text("See More Recipes"),
+            ),
+          ),
+        ],
+      ),
 
             ...allIngredients.map((i) {
               final name = i ['name'];
