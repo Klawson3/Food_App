@@ -81,4 +81,18 @@ recipes.sort((a, b) {
       throw Exception('Failed to load recipe details');
     }
   }
+
+  Future<List<String>> searchIngredients(String query) async {
+    final response = await http.get(
+      Uri.parse(
+        '$baseUrl/food/ingredients/search?query=$query&number=5&apiKey=$apiKey',
+      ),
+    );
+    final data = jsonDecode(response.body);
+    if (response.statusCode == 200) {
+      return (data['results'] as List).map((i) => i['name'] as String).toList();
+    } else {
+      throw Exception('Failed to load ingredients');
+    }
+  }
 }

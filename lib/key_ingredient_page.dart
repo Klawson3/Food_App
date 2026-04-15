@@ -7,6 +7,7 @@ class IngredientPage extends StatefulWidget {
   final String diet;
   const IngredientPage({super.key, required this.diet});
 
+
   @override
   State<IngredientPage> createState() => _IngredientPageState();
 }
@@ -62,34 +63,25 @@ class _IngredientPageState extends State<IngredientPage> {
 
       body: Column(
           children: [
-            TextField(
-              controller: controller,
-            ),
-            const SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: () {
-                String input = controller.text.trim().toLowerCase();
-                if (input.isEmpty) return;
-                
-                if(ingredients.length >= 1) {
+            Autocomplete<String>(
+              optionsBuilder: (TextEditingValue textEditingValue) async {
+                if (textEditingValue.text.isEmpty) return const Iterable<String>.empty();
+                final results = await service.searchIngredients(textEditingValue.text);
+                return results;
+              },
+              onSelected: (String selection) {
+                if (ingredients.length >= 1) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content : Text("You can add up to 1 ingredient")),
                     );
-                    return;
+                  return;
                 }
-
-                if(!ingredients.contains(input)) {
+                if (!ingredients.contains(selection)) {
                   setState(() {
-                  ingredients.add(input);
-                  controller.clear();
-                });
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Ingredient already added"))
-                );
-              }
+                    ingredients.add(selection);
+                  });
+                }
               },
-              child: const Text("Add Ingredient"),
             ),
             const SizedBox(height: 20),
             Expanded(

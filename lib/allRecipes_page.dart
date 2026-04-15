@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'spoonacular_service.dart';
 import 'recipe_detail_page.dart';
+import 'key_ingredient_page.dart';
 class ResultPage extends StatefulWidget {
   final Map<String, dynamic> bestRecipe;
   final SpoonacularService service;
@@ -96,12 +97,14 @@ class _ResultPageState extends State<ResultPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Recipe for you")),
-      body: ListView.builder(
-        itemCount: recipeDisplayData.length,
-        itemBuilder: (context, index) {
-          final data = recipeDisplayData[index];
-          final recipe = data['recipe'] as Map<String, dynamic>;
-          final relevantHave = data['have'] as List<String>;
+      body: Column(
+        children: [
+          Expanded(child: ListView.builder(
+            itemCount: recipeDisplayData.length,
+            itemBuilder: (context, index) {
+              final data = recipeDisplayData[index];
+              final recipe = data['recipe'] as Map<String, dynamic>;
+                final relevantHave = data['have'] as List<String>;
           final relevantNeed = data['need'] as List<String>;
 
           return ListTile(
@@ -145,6 +148,20 @@ class _ResultPageState extends State<ResultPage> {
             ),
           );
         },
+      ),
+    ),
+    ElevatedButton(
+      onPressed: () {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => IngredientPage(diet: "None"),
+          ),
+        );
+      },
+      child: const Text("Restart"),
+    ),
+        ],
       ),
     );
   }

@@ -82,6 +82,25 @@ class _RecipePageState extends State<RecipePage> {
         padding: const EdgeInsets.all(25),
         child: ListView(
           children: [
+            if (recipe['image'] != null)
+              Image.network(recipe['image']),
+
+              Row(children: [
+                const Icon(Icons.timer, size: 16),
+                const SizedBox(width: 6),
+                Text("${recipe['readyInMinutes'] ?? 'N/A'} minutes"),
+              ]),
+              Row(children: [
+                const Icon(Icons.restaurant, size: 16),
+                const SizedBox(width: 6),
+                Text("Serving Size: ${recipe['servings'] ?? 'N/A'}"),
+              ]),
+
+              const SizedBox(height: 15),
+              const Text("Ingredients:",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+
             ...allIngredients.map((i) {
               final name = i ['name'];
               if (have.any((h) => name.contains(h) || h.contains(name))) {
@@ -104,6 +123,14 @@ class _RecipePageState extends State<RecipePage> {
               ]);
             }
           }),
+          const SizedBox(height: 20),
+          const Text("Instructions:",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 8),
+          Text(
+            recipe['instructions']?.toString().replaceAll(RegExp(r'<[^>]*>'), '')
+                ?? "No instructions available",
+          ),
           ElevatedButton(onPressed: seeMore, child: const Text("See More")),
         ],
       ),

@@ -27,20 +27,18 @@ class RecipeDetailPage extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: ListView(
           children: [
-            Image.network(recipe['image']),
-            const SizedBox(height: 20),
-            
             if (recipe['image'] != null)
               Image.network(recipe['image']),
-            Text(
-              "⏱️ ${details['readyInMinutes'] ?? 'N/A'} minutes",
-              style: const TextStyle(fontSize: 16),
-            ),
-
-            Text(
-              "🍽️ Serving Size: ${details['servings'] ?? 'N/A'}",
-              style: const TextStyle(fontSize: 16),
-            ),
+            Row(children: [
+              const Icon(Icons.timer, size: 16),
+              const SizedBox(width: 6),
+              Text("${recipe['readyInMinutes'] ?? 'N/A'} minutes"),
+            ]),
+            Row(children: [
+              const Icon(Icons.restaurant, size: 16),
+              const SizedBox(width: 6),
+              Text("Serving Size: ${recipe['servings'] ?? 'N/A'}"),
+            ]),
 
             const SizedBox(height: 15),
             const Text("Ingredients:",
