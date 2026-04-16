@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'spoonacular_service.dart';
 import 'bestRecipe_page.dart';
+import 'app_colors.dart'; // UI UPDATE: Imported central color hub
+import 'package:flutter_card_swiper/flutter_card_swiper.dart';
+
 
 class QuestionPage extends StatefulWidget {
   final List<dynamic> recipes; //dynamic means the list can contain any type of data
@@ -20,6 +23,7 @@ class QuestionPage extends StatefulWidget {
 }
 
 class _QuestionPageState extends State<QuestionPage> {
+  final CardSwiperController _swiperController = CardSwiperController();
   int recipeIndex = 0;
   int ingredientIndex = 0;
   final int maxRecipeIndex =3;
@@ -34,6 +38,12 @@ class _QuestionPageState extends State<QuestionPage> {
     super.initState();
     haveIngredients = List<String>.from(widget.initialIngredients);
     askedIngredients = Set<String>.from(widget.initialIngredients);
+  }
+
+  @override
+  void dispose() {
+    _swiperController.dispose();
+    super.dispose();
   }
   /*
   [getter] Acts like a variable but recalculates every time it's accessed
@@ -160,17 +170,150 @@ class _QuestionPageState extends State<QuestionPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Checking Ingredient'),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: AppColors.deepSpinach),
+        title: Text(
+          "Check Ingredients",
+          style: TextStyle(
+            fontSize: 26,
+            color: AppColors.deepSpinach,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+        centerTitle: true,
       ),
-      body: Padding(padding: const EdgeInsets.all(25),
-      child: Column(children: [
-        Text("Do you have $currentIngredient?"),
-        const SizedBox(height: 25),
-        ElevatedButton(onPressed: onPressedYes, child: const Text("Yes")),
-        const SizedBox(height: 25),
-        ElevatedButton(onPressed: onPressedNo, child: const Text("No")),
-      ],)
-      )
-    );
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            // UI UPDATE: Swapped pinks for salad gradient
+            colors: [
+              AppColors.fetaWhite,
+              AppColors.crispLettuce.withOpacity(0.3),
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: Column(
+          children: [
+            const SizedBox(height: 30),
+            Text("Do you have this in your fridge?",
+              style: TextStyle(
+                fontSize: 25,
+            fontWeight: FontWeight.w600,
+            color: AppColors.peppercorn,
+          ),
+        ),
+        const SizedBox (height: 10),
+
+        Expanded(
+          child: Align(
+            alignment: const Alignment(0, -0.5),
+            child: SizedBox(
+              width: 300,
+              height: 350,
+              child: CardSwiper(
+                controller: _swiperController,
+            cardsCount: 1,
+            numberOfCardsDisplayed: 1,
+            onSwipe: (previousIndex, currentIndex, direction) {
+              if (direction == CardSwiperDirection.left) {
+                onPressedNo();
+              } else if (direction == CardSwiperDirection.right) {
+                onPressedYes();
+              }
+              return true;
+            },
+            cardBuilder: (context, index, horizontalOffset, verticalOffset) {
+            final isRight = horizontalOffset > 0;
+            final opacity = (horizontalOffset.abs() / 100).clamp(0.0, 1.0);
+            
+            return Stack(
+              children: [
+                Container(
+                  width: 300,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        const Color.fromARGB(255, 171, 225, 240),
+                        AppColors.carrotOrange.withOpacity(0.2),
+                      ],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
+                    borderRadius: BorderRadius.circular(25),  // ← 加这个
+                    boxShadow: [                               // ← 加这个
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 20,
+                        offset: const Offset(0, 8),
+                      ),
+                    ],
+                  ),
+                  child: Center(
+                    child: Text(
+                      currentIngredient,
+                      style: const TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.w800,
+                        color: AppColors.deepSpinach,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+
+                // Overlay
+                Positioned.fill(
+                  child: AnimatedOpacity(
+                    duration: Duration.zero,
+                    opacity: opacity,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: isRight
+                            ? Colors.green.withOpacity(0.4)
+                            : Colors.red.withOpacity(0.4),
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                      child: Center(
+                        child: Icon(
+                          isRight ? Icons.check_circle : Icons.cancel,
+                          color: Colors.white,
+                          size: 80,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            );
+            },         
+          ),
+        ),
+        ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 30),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(children: [
+                const Icon(Icons.close, color: Colors.redAccent),
+                const SizedBox(width: 4),
+                const Text('Nope', style: TextStyle(color: Colors.redAccent)),
+              ]),
+              Row(children: [
+                const Text('Yes!', style: TextStyle(color: Colors.green)),
+                const SizedBox(width: 4),
+                const Icon(Icons.check, color: Colors.green),
+              ]),
+            ],
+          ),
+        ),
+        ], 
+      ),
+    ),
+   );
   }
-}
+} 

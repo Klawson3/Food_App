@@ -38,6 +38,7 @@ dependencies:
   http: ^1.6.0
   animate_do: ^4.2.0
 
+  flutter_card_swiper: ^7.0.1
 
 dev_dependencies:
   flutter_test:
@@ -91,3 +92,4 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
