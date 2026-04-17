@@ -3,6 +3,7 @@ import 'spoonacular_service.dart';
 import 'bestRecipe_page.dart';
 import 'app_colors.dart'; // UI UPDATE: Imported central color hub
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
+import 'dart:math';
 
 
 class QuestionPage extends StatefulWidget {
@@ -177,7 +178,7 @@ class _QuestionPageState extends State<QuestionPage> {
           "Check Ingredients",
           style: TextStyle(
             fontSize: 26,
-            color: AppColors.deepSpinach,
+            color: const Color.fromARGB(255, 31, 98, 77),
             fontWeight: FontWeight.w800,
           ),
         ),
@@ -215,102 +216,98 @@ class _QuestionPageState extends State<QuestionPage> {
               height: 350,
               child: CardSwiper(
                 controller: _swiperController,
-            cardsCount: 1,
-            numberOfCardsDisplayed: 1,
-            onSwipe: (previousIndex, currentIndex, direction) {
-              if (direction == CardSwiperDirection.left) {
-                onPressedNo();
-              } else if (direction == CardSwiperDirection.right) {
-                onPressedYes();
-              }
-              return true;
-            },
-            cardBuilder: (context, index, horizontalOffset, verticalOffset) {
-            final isRight = horizontalOffset > 0;
-            final opacity = (horizontalOffset.abs() / 100).clamp(0.0, 1.0);
-            
-            return Stack(
-              children: [
-                Container(
-                  width: 300,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        const Color.fromARGB(255, 171, 225, 240),
-                        AppColors.carrotOrange.withOpacity(0.2),
-                      ],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                    ),
-                    borderRadius: BorderRadius.circular(25),  // ← 加这个
-                    boxShadow: [                               // ← 加这个
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        blurRadius: 20,
-                        offset: const Offset(0, 8),
-                      ),
-                    ],
-                  ),
-                  child: Center(
-                    child: Text(
-                      currentIngredient,
-                      style: const TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.w800,
-                        color: AppColors.deepSpinach,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ),
-
-                // Overlay
-                Positioned.fill(
-                  child: AnimatedOpacity(
-                    duration: Duration.zero,
-                    opacity: opacity,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: isRight
-                            ? Colors.green.withOpacity(0.4)
-                            : Colors.red.withOpacity(0.4),
-                        borderRadius: BorderRadius.circular(25),
-                      ),
-                      child: Center(
-                        child: Icon(
-                          isRight ? Icons.check_circle : Icons.cancel,
-                          color: Colors.white,
-                          size: 80,
+                cardsCount: 1,
+                numberOfCardsDisplayed: 1,
+                onSwipe: (previousIndex, currentIndex, direction) {
+                  if (direction == CardSwiperDirection.left) {
+                    onPressedNo();
+                  } else if (direction == CardSwiperDirection.right) {
+                    onPressedYes();
+                  }
+                  return true;
+                },
+                cardBuilder: (context, index, horizontalOffset, verticalOffset) {
+                  if (currentIngredient == "no more ingredients") {
+                    return SizedBox();
+                  }
+                  final isRight = horizontalOffset > 0;
+                  final opacity = (horizontalOffset.abs() / 100).clamp(0.0, 1.0);
+                  
+                  return Stack(
+                    children: [
+                      Container(
+                        width: 300,
+                        decoration: BoxDecoration(
+                          color: AppColors.fetaWhite,
+                          borderRadius: BorderRadius.circular(25),  
+                          boxShadow: [                              
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.2),
+                              blurRadius: 10,
+                              offset: const Offset(0, 8),
+                            ),
+                          ],
+                        ),
+                        child: Center(
+                          child: Text(
+                            currentIngredient,
+                            style: const TextStyle(
+                              fontSize: 35,
+                              fontWeight: FontWeight.w800,
+                              color: AppColors.deepSpinach,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                ),
+
+                      // Overlay
+                      Positioned.fill(
+                        child: AnimatedOpacity(
+                          duration: Duration.zero,
+                          opacity: opacity,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: isRight
+                                  ? Colors.green.withOpacity(0.4)
+                                  : Colors.red.withOpacity(0.4),
+                              borderRadius: BorderRadius.circular(25),
+                            ),
+                            child: Center(
+                              child: Icon(
+                                isRight ? Icons.check_circle : Icons.cancel,
+                                color: Colors.white,
+                                size: 80,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },         
+              ),
+            ),
+          ),
+        ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 30),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(children: [
+                  const Icon(Icons.close, color: Colors.redAccent),
+                  const SizedBox(width: 4),
+                  const Text('swipe right for No', style: TextStyle(color: Color.fromARGB(255, 214, 70, 70))),
+                ]),
+                Row(children: [
+                  const Text('Swipe left for Yes', style: TextStyle(color: Color.fromARGB(255, 85, 201, 89))),
+                  const SizedBox(width: 4),
+                  const Icon(Icons.check, color: Colors.green),
+                ]),
               ],
-            );
-            },         
+            ),
           ),
-        ),
-        ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 30),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(children: [
-                const Icon(Icons.close, color: Colors.redAccent),
-                const SizedBox(width: 4),
-                const Text('Nope', style: TextStyle(color: Colors.redAccent)),
-              ]),
-              Row(children: [
-                const Text('Yes!', style: TextStyle(color: Colors.green)),
-                const SizedBox(width: 4),
-                const Icon(Icons.check, color: Colors.green),
-              ]),
-            ],
-          ),
-        ),
         ], 
       ),
     ),
