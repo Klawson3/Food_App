@@ -2,47 +2,87 @@ import 'package:flutter/material.dart';
 import 'package:food_app/spoonacular_service.dart';
 import 'question_page.dart';
 import 'package:google_fonts/google_fonts.dart';
+// UI UPDATE: Imported our color palette
+import 'app_colors.dart';
 
 class IngredientPage extends StatefulWidget {
   final String diet;
   const IngredientPage({super.key, required this.diet});
-
 
   @override
   State<IngredientPage> createState() => _IngredientPageState();
 }
 
 class _IngredientPageState extends State<IngredientPage> {
-
-  final TextEditingController controller = TextEditingController();
-
+  // We only need one controller to read what the user types
+  final TextEditingController _controller = TextEditingController();
   final SpoonacularService service = SpoonacularService();
-  List<String> ingredients = [];
+  
   bool isLoading = false;
 
   Future<void> fetchRecipes() async {
-    if (ingredients.isEmpty) return;
+    // Grab the text and remove any accidental spaces at the end
+    String input = _controller.text.trim();
+
+    // Prevent them from searching with an empty box
+    if (input.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text("Please enter an ingredient!"),
+          backgroundColor: AppColors.carrotOrange, 
+        )
+      );
+      return;
+    }
 
     setState(() {
       isLoading = true;
     });
 
+    // LOGIC PRESERVATION: We package the single word into a List<String> 
+    // exactly like original code expected.
+    List<String> ingredients = [input];
+
     try {
+      // Send the 1-item list to the API
       final recipes = await service.searchByIngredients(ingredients);
+      
       if (!mounted) return;
+
+      // UX UPDATE: Check if the API returned 0 recipes (ingredient likely not found/misspelled)
+      if (recipes.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text("We are unable to find that item in our database... please check your spelling!"),
+            backgroundColor: AppColors.carrotOrange, 
+            duration: const Duration(seconds: 4), // Leaves it on screen a bit longer to read
+          )
+        );
+        return; // Stops the code here so it doesn't navigate to an empty Question Page
+      }
+      
+      // Navigate to the next page
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) {
-            return QuestionPage(recipes: recipes, service: service, initialIngredients: ingredients);
+            return QuestionPage(
+              recipes: recipes, 
+              service: service, 
+              initialIngredients: ingredients 
+            );
           }
         ),
       );
     } catch (e) {
+      // UX UPDATE: Replaced the ugly "$e" exception with a readable error
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error: $e"))
+        SnackBar(
+          content: const Text("Oops! We had trouble searching for that. Please check your spelling or internet connection and try again."),
+          // Swapped from redAccent to carrotOrange 
+          backgroundColor: AppColors.carrotOrange, 
+        )
       );
-      // Handle error
     } finally {
       setState(() {
         isLoading = false;
@@ -53,64 +93,112 @@ class _IngredientPageState extends State<IngredientPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.fetaWhite,
+      
       appBar: AppBar(
-        title: Text("Enter Main Ingredient",
-        style: GoogleFonts.nunito(
-            fontSize: 30,
-            color: Colors.deepPurpleAccent,
-        ),),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: AppColors.deepSpinach),
+        title: Text(
+          "Main Ingredient",
+          style: GoogleFonts.nunito(
+            fontSize: 26,
+            color: AppColors.deepSpinach,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+        centerTitle: true,
       ),
 
-      body: Column(
-          children: [
-            Autocomplete<String>(
-              optionsBuilder: (TextEditingValue textEditingValue) async {
-                if (textEditingValue.text.isEmpty) return const Iterable<String>.empty();
-                final results = await service.searchIngredients(textEditingValue.text);
-                return results;
-              },
-              onSelected: (String selection) {
-                if (ingredients.length >= 1) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content : Text("You can add up to 1 ingredient")),
-                    );
-                  return;
-                }
-                if (!ingredients.contains(selection)) {
-                  setState(() {
-                    ingredients.add(selection);
-                  });
-                }
-              },
-            ),
-            const SizedBox(height: 20),
-            Expanded(
-              child: ListView.builder(
-                itemCount: ingredients.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text(ingredients[index]),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.remove),
-                      onPressed: () {
-                        setState(() {
-                          ingredients.removeAt(index);
-                        });
-                      },
-                    ),
-                  );
-                },
+      body: Padding(
+        padding: const EdgeInsets.all(30.0),
+        child: Center( 
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "What's ONE ingredient you would like to use?",
+                style: GoogleFonts.nunito(
+                  fontSize: 22,
+                  color: AppColors.peppercorn,
+                  fontWeight: FontWeight.w700,
+                ),
+                textAlign: TextAlign.center,
               ),
-            ),
-          ],
-        ),
+              
+              const SizedBox(height: 30),
 
-        floatingActionButton: FloatingActionButton(
-          onPressed: isLoading ? null : fetchRecipes,
-          child: isLoading
-              ? const CircularProgressIndicator(color: Colors.white)
-              : const Icon(Icons.arrow_forward),
+              Container(
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 15,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
+                ),
+                child: TextField(
+                  controller: _controller,
+                  textCapitalization: TextCapitalization.words,
+                  style: GoogleFonts.nunito(
+                    fontSize: 20,
+                    color: AppColors.deepSpinach,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  decoration: InputDecoration(
+                    hintText: "E.g. Chicken, Tofu, Broccoli...",
+                    hintStyle: TextStyle(color: AppColors.peppercorn.withOpacity(0.4)),
+                    prefixIcon: const Icon(Icons.restaurant, color: AppColors.crispLettuce),
+                    filled: true,
+                    fillColor: Colors.white,
+                    contentPadding: const EdgeInsets.symmetric(vertical: 20),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                      borderSide: BorderSide.none,
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                      borderSide: const BorderSide(color: AppColors.crispLettuce, width: 2),
+                    ),
+                  ),
+                  onSubmitted: (value) => fetchRecipes(),
+                ),
+              ),
+
+              const SizedBox(height: 50),
+
+              SizedBox(
+                width: double.infinity, 
+                height: 60,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.carrotOrange,
+                    foregroundColor: AppColors.fetaWhite,
+                    elevation: 5,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  onPressed: isLoading ? null : fetchRecipes,
+                  child: isLoading
+                      ? const CircularProgressIndicator(color: AppColors.fetaWhite)
+                      : Text(
+                          "Find Recipes",
+                          style: GoogleFonts.nunito(
+                            fontSize: 22,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: 1.2,
+                          ),
+                        ),
+                ),
+              ),
+              
+              const SizedBox(height: 80), 
+            ],
+          ),
         ),
-      );
+      ),
+    );
   }
-} 
+}
