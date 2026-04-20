@@ -23,38 +23,107 @@ class RecipeDetailPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(title: Text(recipe['title'])),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: ListView(
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // 🔥 IMAGE HEADER
             if (recipe['image'] != null)
-              Image.network(recipe['image']),
-            Row(children: [
-              const Icon(Icons.timer, size: 16),
-              const SizedBox(width: 6),
-              Text("${recipe['readyInMinutes'] ?? 'N/A'} minutes"),
-            ]),
-            Row(children: [
-              const Icon(Icons.restaurant, size: 16),
-              const SizedBox(width: 6),
-              Text("Serving Size: ${recipe['servings'] ?? 'N/A'}"),
-            ]),
+              Stack(
+                children: [
+                  Image.network(
+                  recipe['image'],
+                  width: double.infinity,
+                  height: 220,
+                  fit: BoxFit.cover,
+                ),
+                Positioned(
+                  top: 40,
+                  left: 10,
+                  child: CircleAvatar(
+                    backgroundColor: Colors.black54,
+                    child: IconButton(
+                      icon: const Icon(Icons.arrow_back, color: Colors.white),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ),
+                ),
+      ],
+              ),
 
-            const SizedBox(height: 15),
-            const Text("Ingredients:",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // 🔥 TITLE
+                  Text(
+            recipe['title'],
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
 
-            ...ingredients.map((ing) => Text("- ${ing['original']}")),
+                  const SizedBox(height: 10),
 
-            const SizedBox(height: 20),
+                  // 🔥 TIME + SERVINGS
+                  Row(
+                    children: [
+                      const Icon(Icons.timer, size: 18),
+                      const SizedBox(width: 6),
+                      Text("${details['readyInMinutes'] ?? 'N/A'} min"),
 
-            const Text("Instructions:",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                      const SizedBox(width: 20),
 
-            Text(instructions),
-          ],
-        ),
+                      const Icon(Icons.restaurant, size: 18),
+                      const SizedBox(width: 6),
+                      Text("Serves ${details['servings'] ?? 'N/A'}"),
+                    ],
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  // 🔥 INGREDIENTS
+                  const Text(
+                    "Ingredients",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+
+                  const SizedBox(height: 10),
+
+                  ...ingredients.map<Widget>((ing) => Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Icon(Icons.circle, size: 6),
+                            const SizedBox(width: 8),
+                            Expanded(child: Text(ing['original'])),
+                          ],
+                        ),
+                      )),
+
+                  const SizedBox(height: 20),
+
+                  // 🔥 INSTRUCTIONS
+                  const Text(
+                  "Instructions",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+
+                const SizedBox(height: 10),
+
+                Text(
+                  instructions,
+                  style: const TextStyle(height: 1.5),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
-    );
+    ),
+  );
   }
 }
