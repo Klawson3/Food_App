@@ -94,75 +94,124 @@ class _ResultPageState extends State<ResultPage> {
 /// - If the user still needs some ingredients, a Row with a red close icon and
 ///   the relevant ingredients the user still needs. When tapped, navigates to
 ///   the RecipeDetailPage with the recipe and its details.
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Recipe for you")),
-      body: Column(
-        children: [
-          Expanded(child: ListView.builder(
+@override
+Widget build(BuildContext context) {
+  return Scaffold(
+    appBar: AppBar(title: const Text("Recipe for you")),
+    body: Column(
+      children: [
+        Expanded(
+          child: ListView.builder(
             itemCount: recipeDisplayData.length,
             itemBuilder: (context, index) {
               final data = recipeDisplayData[index];
               final recipe = data['recipe'] as Map<String, dynamic>;
-                final relevantHave = data['have'] as List<String>;
-          final relevantNeed = data['need'] as List<String>;
+              final relevantHave = data['have'] as List<String>;
+              final relevantNeed = data['need'] as List<String>;
 
-          return ListTile(
-            title: Text(recipe['title']),
+              return GestureDetector(
+                onTap: () async {
+                  final details =
+                      await widget.service.getRecipeDetails(recipe['id']);
 
-              onTap: () async {
-                final details =
-                  await widget.service.getRecipeDetails(recipe['id']);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => RecipeDetailPage(
+                        recipe: recipe,
+                        details: details,
+                      ),
+                    ),
+                  );
+                },
+                child: Card(
+                  margin: const EdgeInsets.symmetric(
+                      horizontal: 12, vertical: 8),
+                  elevation: 3,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ClipRRect(
+                        borderRadius: const BorderRadius.vertical(
+                          top: Radius.circular(15),
+                        ),
+                        child: Image.network(
+                          recipe['image'],
+                          height: 160,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              recipe['title'],
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            Row(
+                              children: [
+                                const Icon(Icons.star,
+                                    color: Colors.amber, size: 16),
+                                const SizedBox(width: 4),
+                                Text(recipe['finalScore']
+                                    .toStringAsFixed(2)),
+                              ],
+                            ),
+                            const SizedBox(height: 6),
+                            Text(
+                              "You have: ${relevantHave.join(", ")}",
+                              style: const TextStyle(fontSize: 13),
+                            ),
+                            if (relevantNeed.isNotEmpty)
+                              Text(
+                                "Missing: ${relevantNeed.join(", ")}",
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                  color: Colors.red,
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
 
-                Navigator.push(
+        Padding(
+          padding: const EdgeInsets.all(12),
+          child: SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => RecipeDetailPage(
-                      recipe: recipe,
-                      details: details,
-                    ),
+                    builder: (context) =>
+                        IngredientPage(diet: "None"),
                   ),
                 );
               },
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(children:[
-                  const Icon(Icons.star, color: Colors.amber, size: 16),
-                  const SizedBox(width: 4),
-                  Expanded(child: Text(recipe['finalScore'].toStringAsFixed(2))),
-                ]),
-                Row(children:[
-                  const Icon(Icons.check, color: Colors.green, size: 16),
-                  const SizedBox(width: 4),
-                  Expanded(child: Text("You have: ${relevantHave.join(", ")}")),
-                ]),
-                if (relevantNeed.isNotEmpty) ...[
-                  Row(children:[
-                    const Icon(Icons.close, color: Colors.red, size: 16),
-                    const SizedBox(width: 4),
-                    Expanded(child: Text("You still need: ${relevantNeed.join(", ")}")),
-                  ]),
-                ],
-              ],
+              child: const Text("Restart"),
             ),
-          );
-        },
-      ),
-    ),
-    ElevatedButton(
-      onPressed: () {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => IngredientPage(diet: "None"),
           ),
-        );
-      },
-      child: const Text("Restart"),
+        ),
+      ],
     ),
-        ],
-      ),
-    );
-  }
-}
+  );
+} // close build
+
+} //close _ResultPageState
