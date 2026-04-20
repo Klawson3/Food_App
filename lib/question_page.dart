@@ -4,6 +4,7 @@ import 'bestRecipe_page.dart';
 import 'app_colors.dart'; // UI UPDATE: Imported central color hub
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'dart:math';
+import 'package:google_fonts/google_fonts.dart';
 
 
 class QuestionPage extends StatefulWidget {
@@ -176,9 +177,9 @@ class _QuestionPageState extends State<QuestionPage> {
         iconTheme: const IconThemeData(color: AppColors.deepSpinach),
         title: Text(
           "Check Ingredients",
-          style: TextStyle(
+          style: GoogleFonts.nunito(
             fontSize: 26,
-            color: const Color.fromARGB(255, 31, 98, 77),
+            color: AppColors.deepSpinach,
             fontWeight: FontWeight.w800,
           ),
         ),
@@ -200,7 +201,7 @@ class _QuestionPageState extends State<QuestionPage> {
           children: [
             const SizedBox(height: 30),
             Text("Do you have this in your fridge?",
-              style: TextStyle(
+              style: GoogleFonts.nunito(
                 fontSize: 25,
             fontWeight: FontWeight.w600,
             color: AppColors.peppercorn,
@@ -298,10 +299,10 @@ class _QuestionPageState extends State<QuestionPage> {
                 Row(children: [
                   const Icon(Icons.close, color: Colors.redAccent),
                   const SizedBox(width: 4),
-                  const Text('swipe right for No', style: TextStyle(color: Color.fromARGB(255, 214, 70, 70))),
+                  Text('swipe right for No', style: GoogleFonts.nunito(color: Color.fromARGB(255, 214, 70, 70))),
                 ]),
                 Row(children: [
-                  const Text('Swipe left for Yes', style: TextStyle(color: Color.fromARGB(255, 85, 201, 89))),
+                  Text('Swipe left for Yes', style: GoogleFonts.nunito(color: Color.fromARGB(255, 85, 201, 89))),
                   const SizedBox(width: 4),
                   const Icon(Icons.check, color: Colors.green),
                 ]),
