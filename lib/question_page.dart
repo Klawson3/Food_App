@@ -292,7 +292,7 @@ class _QuestionPageState extends State<QuestionPage> {
           ),
         ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 30),
+            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 65),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
