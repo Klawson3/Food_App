@@ -270,8 +270,8 @@ class _QuestionPageState extends State<QuestionPage> {
                           child: Container(
                             decoration: BoxDecoration(
                               color: isRight
-                                  ? Colors.green.withOpacity(0.4)
-                                  : Colors.red.withOpacity(0.4),
+                                  ? AppColors.crispLettuce.withOpacity(0.4)
+                                  : AppColors.carrotOrange.withOpacity(0.4),
                               borderRadius: BorderRadius.circular(25),
                             ),
                             child: Center(
@@ -297,14 +297,14 @@ class _QuestionPageState extends State<QuestionPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Row(children: [
-                  const Icon(Icons.close, color: Colors.redAccent),
+                  const Icon(Icons.close, color: AppColors.carrotOrange),
                   const SizedBox(width: 4),
-                  Text('swipe right for No', style: GoogleFonts.nunito(color: Color.fromARGB(255, 214, 70, 70))),
+                  Text('swipe right for No', style: GoogleFonts.nunito(color: AppColors.carrotOrange)),
                 ]),
                 Row(children: [
-                  Text('Swipe left for Yes', style: GoogleFonts.nunito(color: Color.fromARGB(255, 85, 201, 89))),
+                  Text('Swipe left for Yes', style: GoogleFonts.nunito(color: AppColors.crispLettuce)),
                   const SizedBox(width: 4),
-                  const Icon(Icons.check, color: Colors.green),
+                  const Icon(Icons.check, color: AppColors.crispLettuce),
                 ]),
               ],
             ),
