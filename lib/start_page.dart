@@ -5,8 +5,8 @@ import 'app_colors.dart';
 // UI UPDATE: Imported the animation package
 import 'package:animate_do/animate_do.dart'; 
 
-import 'key_ingredient_page.dart';
 import 'diet_selection_page.dart';
+import 'key_ingredient_page.dart';
 
 class StartPage extends StatelessWidget {
   const StartPage({super.key});
@@ -91,7 +91,7 @@ class StartPage extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const DietSelectionPage(),
+                          builder: (context) => const IngredientPage(),
                         ),
                       );
                     },

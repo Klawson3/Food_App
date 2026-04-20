@@ -201,7 +201,7 @@ Widget build(BuildContext context) {
                   context,
                   MaterialPageRoute(
                     builder: (context) =>
-                        IngredientPage(diet: "None"),
+                        IngredientPage(),
                   ),
                 );
               },

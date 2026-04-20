@@ -37,7 +37,7 @@ class _DietSelectionPageState extends State<DietSelectionPage> {
           context,
           MaterialPageRoute(
             // Logic preservation: Pushing to the next screen exactly as the old button did
-            builder: (context) => IngredientPage(diet: selectedDiet!),
+            builder: (context) => IngredientPage(),
           ),
         );
       }
@@ -128,7 +128,7 @@ class _DietSelectionPageState extends State<DietSelectionPage> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const IngredientPage(diet: "None"),
+              builder: (context) => const IngredientPage(),
             ),
           );
         },

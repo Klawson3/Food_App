@@ -6,8 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'app_colors.dart';
 
 class IngredientPage extends StatefulWidget {
-  final String diet;
-  const IngredientPage({super.key, required this.diet});
+  const IngredientPage({super.key});
 
   @override
   State<IngredientPage> createState() => _IngredientPageState();
