@@ -139,9 +139,9 @@ class _RecipePageState extends State<RecipePage> {
                   const Icon(Icons.star, color: Colors.amber, size: 18),
                   const SizedBox(width: 5),
                   Text(
-                    (recipe['rating'] is num)
-                        ? (recipe['rating'] as num).toStringAsFixed(2)
-                        : "",
+                    (recipe['finalScore'] is num)
+                        ? (recipe['finalScore'] as num).toStringAsFixed(2)
+                        : "0.00",
                   ),
                 ],
               ),

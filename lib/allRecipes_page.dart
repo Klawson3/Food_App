@@ -165,7 +165,7 @@ Widget build(BuildContext context) {
                                 const SizedBox(width: 4),
                                 Text(recipe['finalScore']
                                     .toStringAsFixed(2)),
-                              ],
+                             ],
                             ),
                             const SizedBox(height: 6),
                             Text(
