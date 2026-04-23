@@ -60,7 +60,7 @@ class StartPage extends StatelessWidget {
                   delay: const Duration(milliseconds: 400),
                   duration: const Duration(milliseconds: 800),
                   child: Text(
-                    "Cook with what you have",
+                    "Find recipes for what you have",
                     style: GoogleFonts.nunito(
                       fontSize: 20,
                       // UI UPDATE: Applied Peppercorn black to the subtitle
