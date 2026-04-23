@@ -200,7 +200,8 @@ class _QuestionPageState extends State<QuestionPage> {
         child: Column(
           children: [
             const SizedBox(height: 30),
-            Text("Do you have this in your fridge?",
+            Text("Do you have this in\nyour fridge?",
+              textAlign: TextAlign.center,
               style: GoogleFonts.nunito(
                 fontSize: 25,
             fontWeight: FontWeight.w600,
@@ -299,10 +300,10 @@ class _QuestionPageState extends State<QuestionPage> {
                 Row(children: [
                   const Icon(Icons.close, color: AppColors.carrotOrange),
                   const SizedBox(width: 4),
-                  Text('swipe right for No', style: GoogleFonts.nunito(color: AppColors.carrotOrange)),
+                  Text('Swipe left for No', style: GoogleFonts.nunito(color: AppColors.carrotOrange)),
                 ]),
                 Row(children: [
-                  Text('Swipe left for Yes', style: GoogleFonts.nunito(color: AppColors.crispLettuce)),
+                  Text('Swipe right for Yes', style: GoogleFonts.nunito(color: AppColors.crispLettuce)),
                   const SizedBox(width: 4),
                   const Icon(Icons.check, color: AppColors.crispLettuce),
                 ]),
