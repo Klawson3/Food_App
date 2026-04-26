@@ -6,4 +6,14 @@ class AppColors {
   static const Color carrotOrange = Color.fromRGBO(255, 152, 0, 1);
   static const Color fetaWhite = Color.fromRGBO(249, 251, 231, 1);
   static const Color peppercorn = Color.fromRGBO(30, 33, 29, 1);
+  static LinearGradient get backgroundGradient {
+    return LinearGradient(
+      colors: [
+        fetaWhite, 
+        crispLettuce.withValues(alpha: 0.3), 
+      ],
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+    );
+  }
 }

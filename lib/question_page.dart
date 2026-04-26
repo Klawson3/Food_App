@@ -3,7 +3,7 @@ import 'spoonacular_service.dart';
 import 'bestRecipe_page.dart';
 import 'app_colors.dart'; // UI UPDATE: Imported central color hub
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
-import 'dart:math';
+//import 'dart:math';
 import 'package:google_fonts/google_fonts.dart';
 
 
@@ -187,15 +187,7 @@ class _QuestionPageState extends State<QuestionPage> {
       ),
       body: Container(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            // UI UPDATE: Swapped pinks for salad gradient
-            colors: [
-              AppColors.fetaWhite,
-              AppColors.crispLettuce.withOpacity(0.3),
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
+          gradient: AppColors.backgroundGradient
         ),
         child: Column(
           children: [
@@ -303,9 +295,9 @@ class _QuestionPageState extends State<QuestionPage> {
                   Text('Swipe left for No', style: GoogleFonts.nunito(color: AppColors.carrotOrange)),
                 ]),
                 Row(children: [
-                  Text('Swipe right for Yes', style: GoogleFonts.nunito(color: AppColors.crispLettuce)),
+                  Text('Swipe right for Yes', style: GoogleFonts.nunito(color: AppColors.peppercorn)),
                   const SizedBox(width: 4),
-                  const Icon(Icons.check, color: AppColors.crispLettuce),
+                  const Icon(Icons.check, color: AppColors.peppercorn),
                 ]),
               ],
             ),

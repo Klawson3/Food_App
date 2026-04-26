@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'diet_selection_page.dart';
+//import 'diet_selection_page.dart';
 import 'start_page.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'app_colors.dart'; // UI UPDATE: Imported central color hub
+import 'app_colors.dart'; 
 
 void main() {
   runApp(const MyApp());

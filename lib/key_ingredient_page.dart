@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:food_app/spoonacular_service.dart';
 import 'question_page.dart';
 import 'package:google_fonts/google_fonts.dart';
-// UI UPDATE: Imported our color palette
 import 'app_colors.dart';
-// UI UPDATE: Brought in the animation package to match the other pages
 import 'package:animate_do/animate_do.dart';
 
+//This is the page in which the user inputs a single ingredient that they want to use.
 class IngredientPage extends StatefulWidget {
   const IngredientPage({super.key});
 
@@ -15,18 +14,16 @@ class IngredientPage extends StatefulWidget {
 }
 
 class _IngredientPageState extends State<IngredientPage> {
-  // We only need one controller to read what the user types
   final TextEditingController _controller = TextEditingController();
   final SpoonacularService service = SpoonacularService();
   
   bool isLoading = false;
 
   Future<void> fetchRecipes() async {
-    // Grab the text and remove any accidental spaces at the end
     String input = _controller.text.trim();
 
-    // Prevent them from searching with an empty box
-    if (input.isEmpty) {
+    
+    if (input.isEmpty) { // Tells the user to input something if they haven't done that and pressed the button 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text("Please enter an ingredient!"),
@@ -40,18 +37,16 @@ class _IngredientPageState extends State<IngredientPage> {
       isLoading = true;
     });
 
-    // LOGIC PRESERVATION: We package the single word into a List<String> 
-    // exactly like original code expected.
     List<String> ingredients = [input];
 
     try {
-      // Send the 1-item list to the API
-      final recipes = await service.searchByIngredients(ingredients);
+      final recipes = await service.searchByIngredients(ingredients); // Sends the 1-item list to the API
+
       
       if (!mounted) return;
 
-      // UX UPDATE: Check if the API returned 0 recipes (ingredient likely not found/misspelled)
-      if (recipes.isEmpty) {
+      
+      if (recipes.isEmpty) { //Check if the API returned 0 recipes (ingredient likely not found/misspelled)
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: const Text("We are unable to find that item in our database... please check your spelling!"),
@@ -75,8 +70,7 @@ class _IngredientPageState extends State<IngredientPage> {
           }
         ),
       );
-    } catch (e) {
-      // UX UPDATE: Replaced the ugly "$e" exception with a readable error
+    } catch (e) { //Catches errors
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text("Oops! We had trouble searching for that. Please check your spelling or internet connection and try again."),
@@ -93,14 +87,12 @@ class _IngredientPageState extends State<IngredientPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // UI UPDATE: Gradient added
       extendBodyBehindAppBar: true,
       backgroundColor: AppColors.fetaWhite,
-      
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        iconTheme: const IconThemeData(color: AppColors.deepSpinach),
+        //iconTheme: const IconThemeData(color: AppColors.deepSpinach),
         // UI UPDATE: Animated the title sliding down
         title: FadeInDown(
           duration: const Duration(milliseconds: 600),
@@ -116,21 +108,12 @@ class _IngredientPageState extends State<IngredientPage> {
         centerTitle: true,
       ),
 
-      // UI UPDATE: Wrapped the body in our Salad Gradient Container
       body: Container(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              AppColors.fetaWhite, 
-              AppColors.crispLettuce.withOpacity(0.3), 
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
+          gradient: AppColors.backgroundGradient
         ),
         // UI UPDATE: SafeArea ensures content doesn't hit the phone's clock/notch
         child: SafeArea(
-          // UI UPDATE: Animated the entire search block sliding up
           child: FadeInUp(
             duration: const Duration(milliseconds: 800),
             child: Padding(

@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-// UI UPDATE: Imported central color hub
 import 'app_colors.dart';
-// UI UPDATE: Imported the animation package
 import 'package:animate_do/animate_do.dart'; 
 
-import 'diet_selection_page.dart';
+//import 'diet_selection_page.dart';
 import 'key_ingredient_page.dart';
 
+//This is the first page that the user sees when they open the app. 
 class StartPage extends StatelessWidget {
   const StartPage({super.key});
 
@@ -19,15 +18,7 @@ class StartPage extends StatelessWidget {
           // Background
           Container(
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                // UI UPDATE: Swapped pinks for salad gradient
-                colors: [
-                  AppColors.fetaWhite, 
-                  AppColors.crispLettuce.withOpacity(0.3), 
-                ],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
+              gradient: AppColors.backgroundGradient
             ),
           ),
 
