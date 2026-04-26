@@ -24,7 +24,7 @@ class StartPage extends StatelessWidget {
           //// Content
           Center(
             child: Column(
-              //mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center, 
               children: [
                 FadeInDown(
                   duration: const Duration(milliseconds: 800),
@@ -39,7 +39,7 @@ class StartPage extends StatelessWidget {
                   ),
                 ),
 
-                const SizedBox(height: 10), //Creates gaps between the widger items
+                const SizedBox(height: 10), //Creates gaps between the display features
 
                 FadeIn(
                   delay: const Duration(milliseconds: 400),
@@ -48,7 +48,6 @@ class StartPage extends StatelessWidget {
                     "Find recipes for what you have",
                     style: GoogleFonts.nunito(
                       fontSize: 20,
-                      color: AppColors.peppercorn,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -69,7 +68,6 @@ class StartPage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(30), // Nice rounded corners!
                       ),
                     ),
-                    
                     child: Text(
                       "Start Cooking",
                       style: GoogleFonts.nunito(

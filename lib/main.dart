@@ -11,17 +11,16 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This wcidget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'FoodApp Demo',
-      theme: ThemeData(
-        // UI UPDATE: Applied Feta White as the default background for all screens
+      
+      theme: ThemeData(//makes the non-worked on pages look pretty decent, is replaced with specific schemes on certain pages 
         scaffoldBackgroundColor: AppColors.fetaWhite, 
         
-        // UI UPDATE: Mapped the "Salad" palette to the global Material ColorScheme
+        
         colorScheme: ColorScheme.fromSeed(
           seedColor: AppColors.crispLettuce,
           primary: AppColors.deepSpinach,
@@ -29,12 +28,11 @@ class MyApp extends StatelessWidget {
           surface: AppColors.fetaWhite,
         ),
         
-        // UI UPDATE: Tinted the existing Nunito font with Peppercorn black
         textTheme: GoogleFonts.nunitoTextTheme().apply(
           bodyColor: AppColors.peppercorn,
-          displayColor: AppColors.deepSpinach,
         ),
       ),
+      
       home: const StartPage(),
     );
   }
@@ -94,7 +92,6 @@ class _MyHomePageState extends State<MyHomePage> {
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
         child: Column(
-          // UI UPDATE: explicitly defined MainAxisAlignment
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text('You have pushed the button this many times:'),
@@ -105,7 +102,6 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      // UI UPDATE: The FloatingActionButton will now automatically use the theme's colors!
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
         tooltip: 'Increment',

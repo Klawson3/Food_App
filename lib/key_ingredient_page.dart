@@ -17,8 +17,9 @@ class _IngredientPageState extends State<IngredientPage> {
   final TextEditingController _controller = TextEditingController();
   final SpoonacularService service = SpoonacularService();
   
-  bool isLoading = false;
+  bool isLoading = false; 
 
+  ////SEARCH FUCTION
   Future<void> fetchRecipes() async {
     String input = _controller.text.trim();
 
@@ -47,7 +48,7 @@ class _IngredientPageState extends State<IngredientPage> {
 
       
       if (recipes.isEmpty) { //Check if the API returned 0 recipes (ingredient likely not found/misspelled)
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showSnackBar( //we have to use .of() because this is outside the build context
           SnackBar(
             content: const Text("We are unable to find that item in our database... please check your spelling!"),
             backgroundColor: AppColors.carrotOrange, 
@@ -70,20 +71,21 @@ class _IngredientPageState extends State<IngredientPage> {
           }
         ),
       );
-    } catch (e) { //Catches errors
+    } catch (e) { //Catches errors and doesn't just display the red screen anymore
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text("Oops! We had trouble searching for that. Please check your spelling or internet connection and try again."),
           backgroundColor: AppColors.carrotOrange, 
         )
       );
-    } finally {
+    } finally { //finally means this will always run at the end, resetting the isLoading
       setState(() {
         isLoading = false;
       });
     }
   }
 
+  ////ACTUAL DISPLAY
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -92,15 +94,12 @@ class _IngredientPageState extends State<IngredientPage> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        //iconTheme: const IconThemeData(color: AppColors.deepSpinach),
-        // UI UPDATE: Animated the title sliding down
         title: FadeInDown(
           duration: const Duration(milliseconds: 600),
           child: Text(
             "Main Ingredient",
             style: GoogleFonts.nunito(
               fontSize: 26,
-              color: AppColors.deepSpinach,
               fontWeight: FontWeight.w800,
             ),
           ),
@@ -112,8 +111,7 @@ class _IngredientPageState extends State<IngredientPage> {
         decoration: BoxDecoration(
           gradient: AppColors.backgroundGradient
         ),
-        // UI UPDATE: SafeArea ensures content doesn't hit the phone's clock/notch
-        child: SafeArea(
+        child: SafeArea( // SafeArea ensures content doesn't hit the phone's clock/notch when it slides up for the keyboard
           child: FadeInUp(
             duration: const Duration(milliseconds: 800),
             child: Padding(
@@ -126,7 +124,6 @@ class _IngredientPageState extends State<IngredientPage> {
                       "What's ONE ingredient you would like to use?",
                       style: GoogleFonts.nunito(
                         fontSize: 22,
-                        color: AppColors.peppercorn,
                         fontWeight: FontWeight.w700,
                       ),
                       textAlign: TextAlign.center,
@@ -145,11 +142,10 @@ class _IngredientPageState extends State<IngredientPage> {
                         ],
                       ),
                       child: TextField(
-                        controller: _controller,
+                        controller: _controller, //the controller takes the text from the textfield
                         textCapitalization: TextCapitalization.words,
                         style: GoogleFonts.nunito(
                           fontSize: 20,
-                          color: AppColors.deepSpinach,
                           fontWeight: FontWeight.w600,
                         ),
                         decoration: InputDecoration(
@@ -159,23 +155,23 @@ class _IngredientPageState extends State<IngredientPage> {
                           filled: true,
                           fillColor: Colors.white,
                           contentPadding: const EdgeInsets.symmetric(vertical: 20),
-                          border: OutlineInputBorder(
+                          border: OutlineInputBorder( //border when textbox not selected
                             borderRadius: BorderRadius.circular(20),
                             borderSide: BorderSide.none,
                           ),
-                          focusedBorder: OutlineInputBorder(
+                          focusedBorder: OutlineInputBorder( //border when textbox selected
                             borderRadius: BorderRadius.circular(20),
                             borderSide: const BorderSide(color: AppColors.crispLettuce, width: 2),
                           ),
                         ),
-                        onSubmitted: (value) => fetchRecipes(),
+                        onSubmitted: (value) => fetchRecipes(), //the search runs when enter is pressed, value doesnt do anything but it needs to be there
                       ),
                     ),
 
                     const SizedBox(height: 50),
 
                     SizedBox(
-                      width: double.infinity, 
+                      width: double.infinity, //stretches as allowed by the previous EdgeInsets.all
                       height: 60,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
@@ -186,7 +182,7 @@ class _IngredientPageState extends State<IngredientPage> {
                             borderRadius: BorderRadius.circular(20),
                           ),
                         ),
-                        onPressed: isLoading ? null : fetchRecipes,
+                        onPressed: isLoading ? null : fetchRecipes, 
                         child: isLoading
                             ? const CircularProgressIndicator(color: AppColors.fetaWhite)
                             : Text(
@@ -199,8 +195,7 @@ class _IngredientPageState extends State<IngredientPage> {
                               ),
                       ),
                     ),
-                    
-                    const SizedBox(height: 80), 
+                    const SizedBox(height: 50), 
                   ],
                 ),
               ),
