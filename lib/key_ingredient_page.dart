@@ -23,7 +23,6 @@ class _IngredientPageState extends State<IngredientPage> {
   Future<void> fetchRecipes() async {
     String input = _controller.text.trim();
 
-    
     if (input.isEmpty) { // Tells the user to input something if they haven't done that and pressed the button 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -44,7 +43,7 @@ class _IngredientPageState extends State<IngredientPage> {
       final recipes = await service.searchByIngredients(ingredients); // Sends the 1-item list to the API
 
       
-      if (!mounted) return;
+      if (!mounted) return; //makes sure the screen still exists before proceeding
 
       
       if (recipes.isEmpty) { //Check if the API returned 0 recipes (ingredient likely not found/misspelled)
