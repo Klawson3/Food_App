@@ -138,7 +138,7 @@ class _IngredientPageState extends State<IngredientPage> {
                       decoration: BoxDecoration(
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.05),
+                            color: Colors.black.withValues(alpha: 0.05),
                             blurRadius: 15,
                             offset: const Offset(0, 5),
                           ),
@@ -154,7 +154,7 @@ class _IngredientPageState extends State<IngredientPage> {
                         ),
                         decoration: InputDecoration(
                           hintText: "E.g. Chicken, Tofu, Broccoli...",
-                          hintStyle: TextStyle(color: AppColors.peppercorn.withOpacity(0.4)),
+                          hintStyle: TextStyle(color: AppColors.peppercorn.withValues(alpha: 0.4)),
                           prefixIcon: const Icon(Icons.restaurant, color: AppColors.crispLettuce),
                           filled: true,
                           fillColor: Colors.white,
