@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:food_app/spoonacular_service.dart';
 import 'question_page.dart';
 import 'package:google_fonts/google_fonts.dart';
-// UI UPDATE: Imported our color palette
 import 'app_colors.dart';
-// UI UPDATE: Brought in the animation package to match the other pages
 import 'package:animate_do/animate_do.dart';
 
+//This is the page in which the user inputs a single ingredient that they want to use.
 class IngredientPage extends StatefulWidget {
   const IngredientPage({super.key});
 
@@ -15,18 +14,16 @@ class IngredientPage extends StatefulWidget {
 }
 
 class _IngredientPageState extends State<IngredientPage> {
-  // We only need one controller to read what the user types
   final TextEditingController _controller = TextEditingController();
   final SpoonacularService service = SpoonacularService();
   
-  bool isLoading = false;
+  bool isLoading = false; 
 
+  ////SEARCH FUCTION
   Future<void> fetchRecipes() async {
-    // Grab the text and remove any accidental spaces at the end
     String input = _controller.text.trim();
 
-    // Prevent them from searching with an empty box
-    if (input.isEmpty) {
+    if (input.isEmpty) { // Tells the user to input something if they haven't done that and pressed the button 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text("Please enter an ingredient!"),
@@ -40,19 +37,17 @@ class _IngredientPageState extends State<IngredientPage> {
       isLoading = true;
     });
 
-    // LOGIC PRESERVATION: We package the single word into a List<String> 
-    // exactly like original code expected.
     List<String> ingredients = [input];
 
     try {
-      // Send the 1-item list to the API
-      final recipes = await service.searchByIngredients(ingredients);
-      
-      if (!mounted) return;
+      final recipes = await service.searchByIngredients(ingredients); // Sends the 1-item list to the API
 
-      // UX UPDATE: Check if the API returned 0 recipes (ingredient likely not found/misspelled)
-      if (recipes.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
+      
+      if (!mounted) return; //makes sure the screen still exists before proceeding
+
+      
+      if (recipes.isEmpty) { //Check if the API returned 0 recipes (ingredient likely not found/misspelled)
+        ScaffoldMessenger.of(context).showSnackBar( //we have to use .of() because this is outside the build context
           SnackBar(
             content: const Text("We are unable to find that item in our database... please check your spelling!"),
             backgroundColor: AppColors.carrotOrange, 
@@ -75,40 +70,35 @@ class _IngredientPageState extends State<IngredientPage> {
           }
         ),
       );
-    } catch (e) {
-      // UX UPDATE: Replaced the ugly "$e" exception with a readable error
+    } catch (e) { //Catches errors and doesn't just display the red screen anymore
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text("Oops! We had trouble searching for that. Please check your spelling or internet connection and try again."),
           backgroundColor: AppColors.carrotOrange, 
         )
       );
-    } finally {
+    } finally { //finally means this will always run at the end, resetting the isLoading
       setState(() {
         isLoading = false;
       });
     }
   }
 
+  ////ACTUAL DISPLAY
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // UI UPDATE: Gradient added
       extendBodyBehindAppBar: true,
       backgroundColor: AppColors.fetaWhite,
-      
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        iconTheme: const IconThemeData(color: AppColors.deepSpinach),
-        // UI UPDATE: Animated the title sliding down
         title: FadeInDown(
           duration: const Duration(milliseconds: 600),
           child: Text(
             "Main Ingredient",
             style: GoogleFonts.nunito(
               fontSize: 26,
-              color: AppColors.deepSpinach,
               fontWeight: FontWeight.w800,
             ),
           ),
@@ -116,21 +106,11 @@ class _IngredientPageState extends State<IngredientPage> {
         centerTitle: true,
       ),
 
-      // UI UPDATE: Wrapped the body in our Salad Gradient Container
       body: Container(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              AppColors.fetaWhite, 
-              AppColors.crispLettuce.withOpacity(0.3), 
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
+          gradient: AppColors.backgroundGradient
         ),
-        // UI UPDATE: SafeArea ensures content doesn't hit the phone's clock/notch
-        child: SafeArea(
-          // UI UPDATE: Animated the entire search block sliding up
+        child: SafeArea( // SafeArea ensures content doesn't hit the phone's clock/notch when it slides up for the keyboard
           child: FadeInUp(
             duration: const Duration(milliseconds: 800),
             child: Padding(
@@ -143,7 +123,6 @@ class _IngredientPageState extends State<IngredientPage> {
                       "What's ONE ingredient you would like to use?",
                       style: GoogleFonts.nunito(
                         fontSize: 22,
-                        color: AppColors.peppercorn,
                         fontWeight: FontWeight.w700,
                       ),
                       textAlign: TextAlign.center,
@@ -155,44 +134,43 @@ class _IngredientPageState extends State<IngredientPage> {
                       decoration: BoxDecoration(
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.05),
+                            color: Colors.black.withValues(alpha: 0.05),
                             blurRadius: 15,
                             offset: const Offset(0, 5),
                           ),
                         ],
                       ),
                       child: TextField(
-                        controller: _controller,
+                        controller: _controller, //the controller takes the text from the textfield
                         textCapitalization: TextCapitalization.words,
                         style: GoogleFonts.nunito(
                           fontSize: 20,
-                          color: AppColors.deepSpinach,
                           fontWeight: FontWeight.w600,
                         ),
                         decoration: InputDecoration(
                           hintText: "E.g. Chicken, Tofu, Broccoli...",
-                          hintStyle: TextStyle(color: AppColors.peppercorn.withOpacity(0.4)),
+                          hintStyle: TextStyle(color: AppColors.peppercorn.withValues(alpha: 0.4)),
                           prefixIcon: const Icon(Icons.restaurant, color: AppColors.crispLettuce),
                           filled: true,
                           fillColor: Colors.white,
                           contentPadding: const EdgeInsets.symmetric(vertical: 20),
-                          border: OutlineInputBorder(
+                          border: OutlineInputBorder( //border when textbox not selected
                             borderRadius: BorderRadius.circular(20),
                             borderSide: BorderSide.none,
                           ),
-                          focusedBorder: OutlineInputBorder(
+                          focusedBorder: OutlineInputBorder( //border when textbox selected
                             borderRadius: BorderRadius.circular(20),
                             borderSide: const BorderSide(color: AppColors.crispLettuce, width: 2),
                           ),
                         ),
-                        onSubmitted: (value) => fetchRecipes(),
+                        onSubmitted: (value) => fetchRecipes(), //the search runs when enter is pressed, value doesnt do anything but it needs to be there
                       ),
                     ),
 
                     const SizedBox(height: 50),
 
                     SizedBox(
-                      width: double.infinity, 
+                      width: double.infinity, //stretches as allowed by the previous EdgeInsets.all
                       height: 60,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
@@ -203,7 +181,7 @@ class _IngredientPageState extends State<IngredientPage> {
                             borderRadius: BorderRadius.circular(20),
                           ),
                         ),
-                        onPressed: isLoading ? null : fetchRecipes,
+                        onPressed: isLoading ? null : fetchRecipes, 
                         child: isLoading
                             ? const CircularProgressIndicator(color: AppColors.fetaWhite)
                             : Text(
@@ -216,8 +194,7 @@ class _IngredientPageState extends State<IngredientPage> {
                               ),
                       ),
                     ),
-                    
-                    const SizedBox(height: 80), 
+                    const SizedBox(height: 50), 
                   ],
                 ),
               ),
