@@ -8,8 +8,10 @@ import 'package:google_fonts/google_fonts.dart';
 
 class QuestionPage extends StatefulWidget {
   final List<dynamic> recipes;
-  final SpoonacularService service; //Service to fetch recipe data
-  final List<String> initialIngredients; //remark: even though we only allow one ingredient, we keep it as a list for consistency
+  final SpoonacularService service; // Service to fetch recipe data
+
+  // Even though we only allow one ingredient, we keep it as a list for future flexibility.
+  final List<String> initialIngredients;
 
   const QuestionPage({
     super.key,
@@ -25,7 +27,7 @@ class QuestionPage extends StatefulWidget {
 class _QuestionPageState extends State<QuestionPage> {
   int recipeIndex = 0;
   int ingredientIndex = 0;
-  final int maxRecipeIndex =3;
+  final int maxRecipeIndex = 3; // Maximum number of recipes to use for suggesting ingredients
   Map<int, List<String>> needIngredientsMap = {};
 
   List<String> haveIngredients = [];
