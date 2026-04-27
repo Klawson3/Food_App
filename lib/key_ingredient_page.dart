@@ -57,7 +57,6 @@ class _IngredientPageState extends State<IngredientPage> {
         return; 
       }
       
-      // Navigate to the next page
       Navigator.push(
         context,
         MaterialPageRoute(
