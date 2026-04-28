@@ -10,7 +10,7 @@ class RecipePage extends StatefulWidget {
   final List<String> needIngredients;
   final List<dynamic> recipes;
   final Map<int, List<String>> recipeNeedMap;
-
+ 
   const RecipePage({
     super.key,
     required this.service,
