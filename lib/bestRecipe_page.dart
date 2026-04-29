@@ -93,6 +93,14 @@ class _RecipePageState extends State<RecipePage> {
 
     final allIngredients = [...extraHave, ...usedAndMissed];
 
+    int used = have.length;
+    int missing = need.length;
+    int total = used + missing;
+
+    double matchScore = total == 0 ? 0 : used / total;
+    double complexPenalty = total / 30;
+    recipe['finalScore'] = matchScore - complexPenalty;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(recipe['title'] ?? "Best Recipe Match"),
@@ -124,6 +132,8 @@ class _RecipePageState extends State<RecipePage> {
               Text(
                 recipe['title'] ?? "",
                 textAlign: TextAlign.center,
+                softWrap: true,
+                overflow: TextOverflow.visible,
                 style: const TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
