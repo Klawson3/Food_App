@@ -51,9 +51,9 @@ class _ResultPageState extends State<ResultPage> {
       int used = relevantHave.length;
       int missing = relevantNeed.length;
       int total = used + missing;
-      double matchScore = total == 0 ? 0 : used / total;
-      double complexityPenalty = total / 30;
-      recipe['finalScore'] = matchScore - complexityPenalty;
+      double matchScore = total == 0 ? 0 : (used / total) * 100;
+      double simplicityBonus = (1 / (total + 1)) * 10; // tweakable bonus for simpler recipes
+      recipe['finalScore'] = (matchScore + simplicityBonus).clamp(0,100); // final score out of 100
     }
 
     sortedRecipes.sort((a, b) {
@@ -163,9 +163,8 @@ Widget build(BuildContext context) {
                                 const Icon(Icons.star,
                                     color: Colors.amber, size: 16),
                                 const SizedBox(width: 4),
-                                Text(recipe['finalScore']
-                                    .toStringAsFixed(2)),
-                             ],
+                                Text("${recipe['finalScore'].toStringAsFixed(0)}% Match"),
+                              ],
                             ),
                             const SizedBox(height: 6),
                             Text(

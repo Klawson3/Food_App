@@ -27,7 +27,7 @@ class RecipeDetailPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 🔥 IMAGE HEADER
+            //  IMAGE HEADER
             if (recipe['image'] != null)
               Stack(
                 children: [
@@ -56,7 +56,7 @@ class RecipeDetailPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // 🔥 TITLE
+                  //  TITLE
                   Text(
             recipe['title'],
                     style: const TextStyle(
@@ -67,7 +67,7 @@ class RecipeDetailPage extends StatelessWidget {
 
                   const SizedBox(height: 10),
 
-                  // 🔥 TIME + SERVINGS
+                  //  TIME + SERVINGS
                   Row(
                     children: [
                       const Icon(Icons.timer, size: 18),
@@ -84,7 +84,7 @@ class RecipeDetailPage extends StatelessWidget {
 
                   const SizedBox(height: 20),
 
-                  // 🔥 INGREDIENTS
+                  //  INGREDIENTS
                   const Text(
                     "Ingredients",
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -106,7 +106,7 @@ class RecipeDetailPage extends StatelessWidget {
 
                   const SizedBox(height: 20),
 
-                  // 🔥 INSTRUCTIONS
+                  //  INSTRUCTIONS
                   const Text(
                   "Instructions",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
