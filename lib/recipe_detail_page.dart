@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import "package:url_launcher/url_launcher.dart";
 class RecipeDetailPage extends StatelessWidget {
   final Map<String, dynamic> recipe;
   final Map<String, dynamic> details;
@@ -10,6 +10,16 @@ class RecipeDetailPage extends StatelessWidget {
     required this.details,
   });
 
+  Future<void> openRecipeLink(String url) async {
+    final Uri uri = Uri.parse(url);
+
+    if(await canLaunchUrl(uri)) {
+      await launchUrl(
+        uri,
+        mode:LaunchMode.externalApplication,
+      );
+    }
+  }
   @override
 /// Builds a recipe detail page with ingredients and instructions.
 ///
@@ -20,14 +30,14 @@ class RecipeDetailPage extends StatelessWidget {
     final ingredients = details['extendedIngredients'] ?? [];
     final instructions = details['instructions']?.toString().replaceAll(RegExp(r'<[^>]*>'), '') 
         ?? "No instructions available";
-
+    final sourceUrl = details['sourceUrl'];
     return Scaffold(
       appBar: AppBar(title: Text(recipe['title'])),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 🔥 IMAGE HEADER
+            //  IMAGE HEADER
             if (recipe['image'] != null)
               Stack(
                 children: [
@@ -56,7 +66,7 @@ class RecipeDetailPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // 🔥 TITLE
+                  //  TITLE
                   Text(
             recipe['title'],
                     style: const TextStyle(
@@ -67,24 +77,54 @@ class RecipeDetailPage extends StatelessWidget {
 
                   const SizedBox(height: 10),
 
-                  // 🔥 TIME + SERVINGS
-                  Row(
-                    children: [
-                      const Icon(Icons.timer, size: 18),
-                      const SizedBox(width: 6),
-                      Text("${details['readyInMinutes'] ?? 'N/A'} min"),
-
-                      const SizedBox(width: 20),
-
-                      const Icon(Icons.restaurant, size: 18),
-                      const SizedBox(width: 6),
-                      Text("Serves ${details['servings'] ?? 'N/A'}"),
-                    ],
-                  ),
-
+                  //  TIME + SERVINGS
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 12,
+                      horizontal: 16,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade200,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Column(
+                            children: [
+                              const Icon(Icons.timer),
+                              const SizedBox(height: 4),
+                              Text("${details['readyInMinutes'] ?? 'N/A'} min"),
+                            ],
+                          ),
+                          Column(
+                            children: [
+                              const Icon(Icons.restaurant),
+                              const SizedBox(height: 4),
+                              Text("Serves ${details['servings'] ?? 'N/A'}"),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  
+                  const SizedBox(height:20),
+                  
+                  if (sourceUrl != null)
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton.icon(
+                        onPressed: () => openRecipeLink(sourceUrl),
+                        icon: const Icon(Icons.play_circle_fill),
+                        label: const Text("Watch / Full Recipe Guide"),
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                        ),
+                      ),
+                    ),
                   const SizedBox(height: 20),
 
-                  // 🔥 INGREDIENTS
+                  //  INGREDIENTS
                   const Text(
                     "Ingredients",
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -106,7 +146,7 @@ class RecipeDetailPage extends StatelessWidget {
 
                   const SizedBox(height: 20),
 
-                  // 🔥 INSTRUCTIONS
+                  //  INSTRUCTIONS
                   const Text(
                   "Instructions",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
