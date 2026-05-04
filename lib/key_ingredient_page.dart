@@ -5,7 +5,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'app_colors.dart';
 import 'package:animate_do/animate_do.dart';
 
-//This is the page in which the user inputs a single ingredient that they want to use.
+/// KeyIngredientsPage allows the user to input a single main ingredient they currently have.
+/// Users enter their ingredient into a search bar/text field.
+/// Users can proceed to the questions page after they enter their ingredient.
+
+/// StatefulWidget is used because the list of ingredients
+/// changes over time based on user input.
 class IngredientPage extends StatefulWidget {
   const IngredientPage({super.key});
 
@@ -13,8 +18,14 @@ class IngredientPage extends StatefulWidget {
   State<IngredientPage> createState() => _IngredientPageState();
 }
 
+/// Manages the state of the ingredient input.
+/// Includes user inout, ingredient list, and API calls.
 class _IngredientPageState extends State<IngredientPage> {
+  
+  // Captures user input from the TextField
   final TextEditingController _controller = TextEditingController();
+
+  // Service used to fetch recipes from Spoonacular API.
   final SpoonacularService service = SpoonacularService();
   
   bool isLoading = false; 
@@ -40,14 +51,14 @@ class _IngredientPageState extends State<IngredientPage> {
     List<String> ingredients = [input];
 
     try {
-      final recipes = await service.searchByIngredients(ingredients); // Sends the 1-item list to the API
+      final recipes = await service.searchByIngredients(ingredients); // Sends the 1-item list to the API.
 
       
-      if (!mounted) return; //makes sure the screen still exists before proceeding
+      if (!mounted) return; // Makes sure the screen still exists before proceeding.
 
       
-      if (recipes.isEmpty) { //Check if the API returned 0 recipes (ingredient likely not found/misspelled)
-        ScaffoldMessenger.of(context).showSnackBar( //we have to use .of() because this is outside the build context
+      if (recipes.isEmpty) { // Checks if the API returned 0 recipes (ingredient likely not found/misspelled).
+        ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: const Text("We are unable to find that item in our database... please check your spelling!"),
             backgroundColor: AppColors.carrotOrange, 
@@ -69,14 +80,14 @@ class _IngredientPageState extends State<IngredientPage> {
           }
         ),
       );
-    } catch (e) { //Catches errors and doesn't just display the red screen anymore
+    } catch (e) { // Catches errors.
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text("Oops! We had trouble searching for that. Please check your spelling or internet connection and try again."),
           backgroundColor: AppColors.carrotOrange, 
         )
       );
-    } finally { //finally means this will always run at the end, resetting the isLoading
+    } finally { // This will always run at the end, resetting the isLoading.
       setState(() {
         isLoading = false;
       });
@@ -109,7 +120,7 @@ class _IngredientPageState extends State<IngredientPage> {
         decoration: BoxDecoration(
           gradient: AppColors.backgroundGradient
         ),
-        child: SafeArea( // SafeArea ensures content doesn't hit the phone's clock/notch when it slides up for the keyboard
+        child: SafeArea( // SafeArea ensures content doesn't hit the phone's clock/notch when it slides up for the keyboard.
           child: FadeInUp(
             duration: const Duration(milliseconds: 800),
             child: Padding(
@@ -140,7 +151,7 @@ class _IngredientPageState extends State<IngredientPage> {
                         ],
                       ),
                       child: TextField(
-                        controller: _controller, //the controller takes the text from the textfield
+                        controller: _controller, 
                         textCapitalization: TextCapitalization.words,
                         style: GoogleFonts.nunito(
                           fontSize: 20,
@@ -157,19 +168,19 @@ class _IngredientPageState extends State<IngredientPage> {
                             borderRadius: BorderRadius.circular(20),
                             borderSide: BorderSide.none,
                           ),
-                          focusedBorder: OutlineInputBorder( //border when textbox selected
+                          focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20),
                             borderSide: const BorderSide(color: AppColors.crispLettuce, width: 2),
                           ),
                         ),
-                        onSubmitted: (value) => fetchRecipes(), //the search runs when enter is pressed, value doesnt do anything but it needs to be there
+                        onSubmitted: (value) => fetchRecipes(), // The search runs when the enter button is pressed.
                       ),
                     ),
 
                     const SizedBox(height: 50),
 
                     SizedBox(
-                      width: double.infinity, //stretches as allowed by the previous EdgeInsets.all
+                      width: double.infinity, 
                       height: 60,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
