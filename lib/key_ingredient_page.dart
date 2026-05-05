@@ -34,7 +34,7 @@ class _IngredientPageState extends State<IngredientPage> {
   Future<void> fetchRecipes() async {
     String input = _controller.text.trim();
 
-    if (input.isEmpty) { // Tells the user to input something if they haven't done that and pressed the button 
+    if (input.isEmpty) { 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text("Please enter an ingredient!"),
@@ -53,11 +53,9 @@ class _IngredientPageState extends State<IngredientPage> {
     try {
       final recipes = await service.searchByIngredients(ingredients); // Sends the 1-item list to the API.
 
-      
       if (!mounted) return; // Makes sure the screen still exists before proceeding.
-
       
-      if (recipes.isEmpty) { // Checks if the API returned 0 recipes (ingredient likely not found/misspelled).
+      if (recipes.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: const Text("We are unable to find that item in our database... please check your spelling!"),
@@ -80,14 +78,15 @@ class _IngredientPageState extends State<IngredientPage> {
           }
         ),
       );
-    } catch (e) { // Catches errors.
+    } catch (e) { // Will catch errors if they occur in the previous block
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text("Oops! We had trouble searching for that. Please check your spelling or internet connection and try again."),
           backgroundColor: AppColors.carrotOrange, 
         )
       );
-    } finally { // This will always run at the end, resetting the isLoading.
+    } finally { // This will always run at the end to signal that the the search function has ended,
+                // no matter how it ends.
       setState(() {
         isLoading = false;
       });
@@ -99,10 +98,8 @@ class _IngredientPageState extends State<IngredientPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      backgroundColor: AppColors.fetaWhite,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        elevation: 0,
         title: FadeInDown(
           duration: const Duration(milliseconds: 600),
           child: Text(
@@ -120,7 +117,7 @@ class _IngredientPageState extends State<IngredientPage> {
         decoration: BoxDecoration(
           gradient: AppColors.backgroundGradient
         ),
-        child: SafeArea( // SafeArea ensures content doesn't hit the phone's clock/notch when it slides up for the keyboard.
+        child: SafeArea( // SafeArea ensures content doesn't hit the phone's clock/notch
           child: FadeInUp(
             duration: const Duration(milliseconds: 800),
             child: Padding(
@@ -140,6 +137,7 @@ class _IngredientPageState extends State<IngredientPage> {
                     
                     const SizedBox(height: 30),
 
+                    //Area for the user to input their ingredient. 
                     Container(
                       decoration: BoxDecoration(
                         boxShadow: [
@@ -164,21 +162,22 @@ class _IngredientPageState extends State<IngredientPage> {
                           filled: true,
                           fillColor: Colors.white,
                           contentPadding: const EdgeInsets.symmetric(vertical: 20),
-                          border: OutlineInputBorder( //border when textbox not selected
+                          border: OutlineInputBorder( //displays nothing but focusedBorder needs this
                             borderRadius: BorderRadius.circular(20),
                             borderSide: BorderSide.none,
                           ),
-                          focusedBorder: OutlineInputBorder(
+                          focusedBorder: OutlineInputBorder( //the border when the using is inputting text
                             borderRadius: BorderRadius.circular(20),
                             borderSide: const BorderSide(color: AppColors.crispLettuce, width: 2),
                           ),
                         ),
-                        onSubmitted: (value) => fetchRecipes(), // The search runs when the enter button is pressed.
+                        onSubmitted: (value) => fetchRecipes(), //Search runs when enter is pressed
                       ),
                     ),
 
                     const SizedBox(height: 50),
 
+                    //Button the user can press when an ingredient is entered.
                     SizedBox(
                       width: double.infinity, 
                       height: 60,

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'key_ingredient_page.dart';
-// UI UPDATE: Imported our color palette
 import 'app_colors.dart';
 
+//THIS PAGE IS NO LONGER IN USE IN THE APPLICATION
 class DietSelectionPage extends StatefulWidget {
   const DietSelectionPage({super.key});
 
@@ -36,7 +36,6 @@ class _DietSelectionPageState extends State<DietSelectionPage> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            // Logic preservation: Pushing to the next screen exactly as the old button did
             builder: (context) => IngredientPage(),
           ),
         );
@@ -85,7 +84,7 @@ class _DietSelectionPageState extends State<DietSelectionPage> {
                 duration: const Duration(milliseconds: 200),
                 curve: Curves.easeInOut,
                 decoration: BoxDecoration(
-                  color: isSelected ? AppColors.crispLettuce.withOpacity(0.2) : Colors.white,
+                  color: isSelected ? AppColors.crispLettuce.withValues(alpha: 0.2) : Colors.white,
                   borderRadius: BorderRadius.circular(20), 
                   
                   border: Border.all(
@@ -96,7 +95,7 @@ class _DietSelectionPageState extends State<DietSelectionPage> {
                   boxShadow: [
                     if (!isSelected) 
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
+                        color: Colors.black.withValues(alpha: .05),
                         blurRadius: 10,
                         offset: const Offset(0, 4),
                       ),
@@ -136,7 +135,7 @@ class _DietSelectionPageState extends State<DietSelectionPage> {
           "Skip",
           style: GoogleFonts.nunito(
             fontSize: 18,
-            color: AppColors.peppercorn.withOpacity(0.6), // A slightly faded grey-black
+            color: AppColors.peppercorn.withValues(alpha: .6), // A slightly faded grey-black
             fontWeight: FontWeight.w700,
           ),
         ),
