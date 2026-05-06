@@ -32,7 +32,8 @@ class _ResultPageState extends State<ResultPage> {
 
   void initState() {
     super.initState();
-    // creates copy so dont mutate og list directly
+
+    // Creates copy of list
     final sortedRecipes = List<dynamic>.from(widget.recipes);
 
     for (final recipe in sortedRecipes) {
@@ -57,12 +58,14 @@ class _ResultPageState extends State<ResultPage> {
       double simplicityBonus = (1 / (total + 1)) * 10; // tweakable bonus for simpler recipes
       recipe['finalScore'] = (matchScore + simplicityBonus).clamp(0,100); // final score out of 100
     }
-    // sort recipise by descending score 
+
+    // Sort recipe by descending score 
     sortedRecipes.sort((a, b) {
       int scoreCompare = b['finalScore'].compareTo(a['finalScore']);
       if (scoreCompare != 0) return scoreCompare;
       return a['missedIngredientCount'].compareTo(b['missedIngredientCount']);
     });
+
     // Buiild display-friendly data structure with relevant have/need lists for each recipe
     recipeDisplayData = sortedRecipes.map((recipe) {
       final recipeAllNames = [
@@ -80,9 +83,9 @@ class _ResultPageState extends State<ResultPage> {
           .toList();
       
       return {
-        'recipe': recipe,  //full recipe object
-        'have': relevantHave, // filtired "you have"
-        'need': relevantNeed, // filtired "you need"
+        'recipe': recipe,  // Full recipe object
+        'have': relevantHave, // Filtired "you have"
+        'need': relevantNeed, // Filtired "you need"
       };
     }).toList();
   }
@@ -97,13 +100,16 @@ class _ResultPageState extends State<ResultPage> {
   /// - Ingredients user has
   /// - Ingredients user is missing
   /// Clicking a card opens detailed recipe page
+
+
 @override
 Widget build(BuildContext context) {
   return Scaffold(
     appBar: AppBar(title: const Text("Recipe for you")),
     body: Column(
       children: [
-        //recipie list 
+        
+        // Recipie list 
         Expanded(
           child: ListView.builder(
             itemCount: recipeDisplayData.length,
@@ -114,7 +120,7 @@ Widget build(BuildContext context) {
               final relevantNeed = data['need'] as List<String>;
 
               return GestureDetector(
-                //when recupie is tapped. fetch full details and navigate to detail page
+                // Fetch full details and navigate to detail page
                 onTap: () async {
                   final details =
                       await widget.service.getRecipeDetails(recipe['id']);
@@ -129,7 +135,7 @@ Widget build(BuildContext context) {
                     ),
                   );
                 },
-                ///card UI
+                // Card UI
                 child: Card(
                   margin: const EdgeInsets.symmetric(
                       horizontal: 12, vertical: 8),
@@ -140,7 +146,7 @@ Widget build(BuildContext context) {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      //recipie image 
+                      // Recipie image 
                       ClipRRect(
                         borderRadius: const BorderRadius.vertical(
                           top: Radius.circular(15),
@@ -196,7 +202,8 @@ Widget build(BuildContext context) {
             },
           ),
         ),
-        ///restart button goes back to ingredient selection
+
+        // Restart button goes back to ingredient selection page
         Padding(
           padding: const EdgeInsets.all(12),
           child: SizedBox(
