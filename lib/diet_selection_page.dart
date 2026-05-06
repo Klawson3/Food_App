@@ -4,6 +4,8 @@ import 'key_ingredient_page.dart';
 import 'app_colors.dart';
 
 //THIS PAGE IS NO LONGER IN USE IN THE APPLICATION
+//This page would let the user select a diet, which the suggested recipes will follow
+//However, this was never fully implemented
 class DietSelectionPage extends StatefulWidget {
   const DietSelectionPage({super.key});
 
