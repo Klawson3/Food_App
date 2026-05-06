@@ -44,6 +44,20 @@ Start Page --> Ingredient Input --> Best Recipe -->
 --> Cook (button) --> Recipe Detail Page
 --> See More --> All Recipes Page
 
+Key Components:
+
+StartPage: entry point of app; UI focus along with navigation to main workflow.
+
+IngredientPage: handles user input and initiates API calls.
+
+BestRecipePage: displays the highest-reanked recipe, shows ingredient match status, provides navigation to cooking instructions and additional recipes.
+
+AllRecipesPage: displays all recipes sorted by score.
+
+RecipeDetailsPage: displays full recipe instructions and ingredient list.
+
+Spoonacular: handles API requests and fetches recipe detail data.
+
 
 ## Getting Started
 
