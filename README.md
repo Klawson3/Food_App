@@ -2,6 +2,10 @@
 
 A new Flutter project.
 
+Overview
+
+Our Cook4U food app is a Flutter based mobile application that helps users generate recipes based on ingredients they already have. This app is particularly targeted towards college students who may be restricted by fiscal means and don't have a lot of time to prepare extravagant dishes. By leveraging the Spoonacular API, the app identifies the best possible recipe match and provides alternative options, detailed ingredients, and step-by-step cooking instructions. The goal of this project is to simplify meal planning, reduce food waste, and create an intuitive user experience for discovering recipes. 
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
