@@ -244,6 +244,23 @@ class _QuestionPageState extends State<QuestionPage> {
                                 ),
                               ),
                             ),
+                            
+                            Positioned(
+                              top: 20,
+                              left: 0,
+                              right: 0,
+                              child: Center(
+                                child: Pulse(
+                                  infinite: true,
+                                  duration: const Duration(milliseconds: 1500),
+                                  child: Icon(
+                                    Icons.swipe,
+                                    color: AppColors.peppercorn.withValues(alpha: .4),
+                                    size: 35,
+                                  ),
+                                ),
+                              ),
+                            ),
 
                             // Overlay
                             Positioned.fill(
@@ -302,17 +319,6 @@ class _QuestionPageState extends State<QuestionPage> {
                           const SizedBox(width: 4),
                           const Icon(Icons.close, color: AppColors.carrotOrange, size: 28),
                         ],
-                      ),
-                      
-                      // Gently pulsing swipe hand 
-                      Pulse(
-                        infinite: true, 
-                        duration: const Duration(milliseconds: 1500),
-                        child: Icon(
-                          Icons.swipe, 
-                          color: AppColors.peppercorn.withValues(alpha: .4), 
-                          size: 35,
-                        ),
                       ),
 
                       // Yes Direction Indicator
