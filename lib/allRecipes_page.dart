@@ -77,8 +77,8 @@ class _ResultPageState extends State<ResultPage> {
       int missing = relevantNeed.length;
       int total = used + missing;
       double matchScore = total == 0 ? 0 : (used / total) * 100;
-      double simplicityBonus = (1 / (total + 1)) * 10; // tweakable bonus for simpler recipes
-      recipe['finalScore'] = (matchScore + simplicityBonus).clamp(0,100); // final score out of 100
+      double simplicityBonus = (1 / (total + 1)) * 10; // Tweakable bonus for simpler recipes
+      recipe['finalScore'] = (matchScore + simplicityBonus).clamp(0,100); // Final score out of 100
     }
 
     // Sort recipe by descending score 
