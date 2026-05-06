@@ -9,8 +9,11 @@ import 'package:animate_do/animate_do.dart';
 class QuestionPage extends StatefulWidget {
   final List<dynamic> recipes;
   final SpoonacularService service; 
-  final List<String> initialIngredients;
 
+  // Although currently only a single initial key ingredient is permitted, we still store it as a list
+  // to preserve the possibility of supporting multiple key ingredients in the future.
+  final List<String> initialIngredients; 
+  
   const QuestionPage({
     super.key,
     required this.recipes,
@@ -22,10 +25,16 @@ class QuestionPage extends StatefulWidget {
   _QuestionPageState createState() => _QuestionPageState();
 }
 
+/// This page retrieves ingredients from up to the first three Spoonacular recipes. 
+/// The search terminates after these three, regardless of whether a perfect match was found.
 class _QuestionPageState extends State<QuestionPage> {
   int recipeIndex = 0;
   int ingredientIndex = 0;
-  final int maxRecipeIndex = 3; 
+
+  /// The maximum number of recipes to probe for missing ingredients.
+  /// Note: If recipeIndex starts at 0, using '< MAX_SEARCH_RESULT' 
+  /// actually processes (MAX_SEARCH_RESULT + 1) items
+  final int MAX_SEARCH_RESULT = 3; 
   Map<int, List<String>> needIngredientsMap = {};
 
   List<String> haveIngredients = [];
@@ -46,6 +55,8 @@ class _QuestionPageState extends State<QuestionPage> {
   String get currentIngredient {
     for (int i = ingredientIndex; i < missedList.length; i++) {
       final name = missedList[i]['name'] as String;
+      // Skip ingredients that were already addressed in previous 
+      // recipes to avoid redundant questions.
       if (!askedIngredients.contains(name)) {
         ingredientIndex = i; 
         return name;
@@ -94,11 +105,11 @@ class _QuestionPageState extends State<QuestionPage> {
 
     final lastNeed = needIngredientsMap[recipeIndex]!;
     if (lastNeed.isEmpty) {
-        goToRecipePage();
-        return;
+      goToRecipePage();
+      return;
     }
 
-    if (recipeIndex < maxRecipeIndex && recipeIndex < widget.recipes.length - 1) {
+    if (recipeIndex < MAX_SEARCH_RESULT && recipeIndex < widget.recipes.length - 1) {
       setState(() {
         recipeIndex++;
         ingredientIndex = 0;
@@ -109,48 +120,33 @@ class _QuestionPageState extends State<QuestionPage> {
     }
   }
 
-  void onPressedYes() {
+  void _handleSwipe(bool hasIngredient) {
     final ingredient = currentIngredient;
     askedIngredients.add(ingredient);
-    
-    if (!haveIngredients.contains(ingredient)) {
-      haveIngredients.add(ingredient);
+ 
+    if (hasIngredient) {
+      if (!haveIngredients.contains(ingredient)) haveIngredients.add(ingredient);
+    } else {
+      if (!needIngredients.contains(ingredient)) needIngredients.add(ingredient);
     }
-
-    if (recipeIndex >= maxRecipeIndex) {
+ 
+    if (recipeIndex >= MAX_SEARCH_RESULT) {
       goToRecipePage();
       return;
     }
-
+ 
     if (ingredientIndex >= missedList.length - 1) {
-        moveToNextRecipe();
-        return;
+      moveToNextRecipe();
+      return;
     }
+ 
     setState(() {
       ingredientIndex++;
     });
   }
 
-  void onPressedNo() {
-    final ingredient = currentIngredient;
-    askedIngredients.add(ingredient); 
-
-    if (!needIngredients.contains(ingredient)) {
-      needIngredients.add(ingredient);
-    }
-
-    if (recipeIndex >= maxRecipeIndex) {
-      goToRecipePage();
-      return;
-    }
-    if (ingredientIndex >= missedList.length - 1) {
-      moveToNextRecipe(); 
-      return;
-    }
-    setState(() {
-      ingredientIndex++;
-    });
-  }
+  void onPressedYes() => _handleSwipe(true);
+  void onPressedNo() => _handleSwipe(false);
   
   @override
   Widget build(BuildContext context) {
