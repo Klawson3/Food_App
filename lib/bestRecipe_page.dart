@@ -201,10 +201,15 @@ class _RecipePageState extends State<RecipePage> {
                               : isNeed
                                   ? Colors.red
                                   : Colors.grey,
-                          size: 18,
+                          size: 30,
                         ),
                         const SizedBox(width: 10),
-                        Expanded(child: Text(name.toString())),
+                          Expanded(child: Text(name.toString(), 
+                            style: TextStyle(
+                              fontSize: 20,
+                            ),
+                          )
+                        ),
                       ],
                     ),
                   );
@@ -218,7 +223,11 @@ class _RecipePageState extends State<RecipePage> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: cookRecipe,
-                  child: const Text("Cook"),
+                  child: const Text("Cook", 
+                    style: TextStyle(
+                      fontSize: 20,
+                    ),
+                  ),
                 ),
               ),
 
@@ -228,7 +237,11 @@ class _RecipePageState extends State<RecipePage> {
                 width: double.infinity,
                 child: OutlinedButton(
                   onPressed: seeMore,
-                  child: const Text("See More Recipes"),
+                  child: const Text("See More Recipes", 
+                    style: TextStyle(
+                      fontSize: 20,
+                    ),
+                  ),
                 ),
               ),
             ],
