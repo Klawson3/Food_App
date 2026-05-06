@@ -17,7 +17,8 @@ class ResultPage extends StatefulWidget {
  /// Each recipe is evaluated using a custom scoring algorithm that
  /// considers ingredient availability and overal recipe complexity.
  /// The page allows users to compare multiple recipes together and select
- /// the one they want to view.
+ /// the one they want to view in detail.
+
   const ResultPage({
     super.key,
     required this.service,
@@ -32,10 +33,24 @@ class ResultPage extends StatefulWidget {
   State<ResultPage> createState() => _ResultPageState();
 }
 
+/// A StatefuleWidget is used to store and process
+/// recipe data for rendering and interaction.
+/// Manages the processed recipe data, including scoring, sorting, 
+/// and display.
+
 class _ResultPageState extends State<ResultPage> {
   late List<Map<String, dynamic>> recipeDisplayData;
-  //stores processed recipe data with caluclated scores+ filtired ingridient list
   @override
+
+
+/// Initializes the page by processing and ranking recipes.
+/// 
+/// 1. Copies the original recipe list
+/// 2. Computes a match score for each recipe
+/// 3. Applies a complexity penalty based on ingredient count
+/// 4. Sorts recipes by score (highest match)
+/// 5. Prepares structured data for UI display
+ 
 
   void initState() {
     super.initState();
