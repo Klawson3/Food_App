@@ -12,12 +12,30 @@ Ingredient-Based Search: user inputs ingredient they currently have.
 
 Best Match Algorithm: recipes are ranked using a scoring system based on ingredient match and complexity.
 
+Interactive Questions Page: further matches the ingredients of the user to a recipe.
+
 Match Scoring System: each recipe is assigned a score to indicate how well it matches the user's ingredients.
 
 Detailed Recipe View: ingredients, cooking time, servings, and instructions.
 
 Alternative Recipes: additional recipe options for user to explore.
 
+
+
+Technology Used:
+Flutter(Dart)
+Spoonacular API
+
+
+How It Works:
+
+1. User enters available ingredient
+2. Questions Page gathers more information
+3. App sends request to Spoonacular API
+4. Best Recipe is returned and processed
+5. User can see additional recipes with a match score calculated for each recipe
+6. Recipes are sorted based on score
+7. User can view detailed instructions and explore more recipe options
 
 
 ## Getting Started
