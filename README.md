@@ -8,7 +8,7 @@ Our Cook4U food app is a Flutter based mobile application that helps users gener
 
 Features
 
-Ingredient-Based Search: user inputs ingredient they currently have.
+Ingredient-Based Search: user inputs a single ingredient they currently have.
 
 Best Match Algorithm: recipes are ranked using a scoring system based on ingredient match and complexity.
 
@@ -29,7 +29,7 @@ Spoonacular API
 
 How It Works:
 
-1. User enters available ingredient
+1. User enters a single available ingredient[']
 2. Questions Page gathers more information
 3. App sends request to Spoonacular API
 4. Best Recipe is returned and processed

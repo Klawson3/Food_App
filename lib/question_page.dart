@@ -120,6 +120,8 @@ class _QuestionPageState extends State<QuestionPage> {
     }
   }
 
+
+  ///
   void _handleSwipe(bool hasIngredient) {
     final ingredient = currentIngredient;
     askedIngredients.add(ingredient);
@@ -262,7 +264,6 @@ class _QuestionPageState extends State<QuestionPage> {
                               ),
                             ),
 
-                            // Overlay
                             Positioned.fill(
                               child: AnimatedOpacity(
                                 duration: Duration.zero,
@@ -312,16 +313,14 @@ class _QuestionPageState extends State<QuestionPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      // No Direction Indicator
                       Row(
                         children: [
-                          const Icon(Icons.keyboard_double_arrow_left, color: AppColors.carrotOrange, size: 24),
-                          const SizedBox(width: 4),
                           const Icon(Icons.close, color: AppColors.carrotOrange, size: 28),
+                          const SizedBox(width: 4),
+                          const Icon(Icons.keyboard_double_arrow_left, color: AppColors.carrotOrange, size: 24),
                         ],
                       ),
 
-                      // Yes Direction Indicator
                       Row(
                         children: [
                           const Icon(Icons.check, color: AppColors.crispLettuce, size: 28),
