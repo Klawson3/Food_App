@@ -38,6 +38,13 @@ How It Works:
 7. User can view detailed instructions and explore more recipe options
 
 
+App Flow:
+
+Start Page --> Ingredient Input --> Best Recipe --> 
+--> Cook (button) --> Recipe Detail Page
+--> See More --> All Recipes Page
+
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
