@@ -10,6 +10,14 @@ class ResultPage extends StatefulWidget {
   final List<String> needIngredients;
   final Map<int, List<String>> recipeNeedMap;   // Map to store missing ingredients per recipe ID
  
+
+ /// ResultPage displays a list of recipe recommendations reanked
+ /// by how well they match the user's available ingredient.
+ /// 
+ /// Each recipe is evaluated using a custom scoring algorithm that
+ /// considers ingredient availability and overal recipe complexity.
+ /// The page allows users to compare multiple recipes together and select
+ /// the one they want to view.
   const ResultPage({
     super.key,
     required this.service,
