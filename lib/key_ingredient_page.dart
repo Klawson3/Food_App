@@ -113,6 +113,7 @@ class _IngredientPageState extends State<IngredientPage> {
         centerTitle: true,
       ),
 
+      
       body: Container(
         decoration: BoxDecoration(
           gradient: AppColors.backgroundGradient
