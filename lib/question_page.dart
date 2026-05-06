@@ -121,7 +121,7 @@ class _QuestionPageState extends State<QuestionPage> {
   }
 
 
-  ///
+  /// Processes the swipe action for an ingredient card.
   void _handleSwipe(bool hasIngredient) {
     final ingredient = currentIngredient;
     askedIngredients.add(ingredient);

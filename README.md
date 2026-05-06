@@ -1,74 +1,118 @@
 # food_app
+> cook with what you have.
 
-A new Flutter project.
 
-Overview
+
+## Overview
 
 Our Cook4U food app is a Flutter based mobile application that helps users generate recipes based on ingredients they already have. This app is particularly targeted towards college students who may be restricted by fiscal means and don't have a lot of time to prepare extravagant dishes. By leveraging the Spoonacular API, the app identifies the best possible recipe match and provides alternative options, detailed ingredients, and step-by-step cooking instructions. The goal of this project is to simplify meal planning, reduce food waste, and create an intuitive user experience for discovering recipes. 
 
-Features
-
-Ingredient-Based Search: user inputs a single ingredient they currently have.
-
-Best Match Algorithm: recipes are ranked using a scoring system based on ingredient match and complexity.
-
-Interactive Questions Page: further matches the ingredients of the user to a recipe.
-
-Match Scoring System: each recipe is assigned a score to indicate how well it matches the user's ingredients.
-
-Detailed Recipe View: ingredients, cooking time, servings, and instructions.
-
-Alternative Recipes: additional recipe options for user to explore.
 
 
 
-Technology Used:
-Flutter(Dart)
-Spoonacular API
+## Features
+
+- **Ingredient-Based Search** - user inputs a single ingredient they currently have.
+
+- **Best Match Algorithm** - recipes are ranked using a scoring system based on ingredient match and complexity.
+
+- **Interactive Questions Page** - further matches the ingredients of the user to a recipe.
+
+- **Match Scoring System** - each recipe is assigned a score to indicate how well it matches the user's ingredients.
+
+- **Detailed Recipe View** - ingredients, cooking time, servings, and instructions.
+
+- **Alternative Recipes** - additional recipe options for user to explore.
 
 
-How It Works:
 
-1. User enters a single available ingredient[']
-2. Questions Page gathers more information
-3. App sends request to Spoonacular API
-4. Best Recipe is returned and processed
-5. User can see additional recipes with a match score calculated for each recipe
-6. Recipes are sorted based on score
-7. User can view detailed instructions and explore more recipe options
+## Technology Used:
+- **Framework** - Flutter(Dart)
+- **API** - [Spoonacular](https://spoonacular.com/food-api)
 
 
-App Flow:
 
-Start Page --> Ingredient Input --> Best Recipe --> 
---> Cook (button) --> Recipe Detail Page
---> See More --> All Recipes Page
+## How It Works:
 
-Key Components:
+1. User enters a single available ingredient(stored as a list to support future multi-ingredient input)
+2. App queries Spoonacular API and retrieves up to 20 pre-ranked candidate recipes
+3. Questions Page asks about missing ingredients across the top 3 recipes (already-asked ingredients are skipped)
+4. App selects the best-matched recipe based on confirmed available ingredients
+5. All recipes are re-scored and sorted for the user to explore
+6. User can view full instructions for any recipe
 
-StartPage: entry point of app; UI focus along with navigation to main workflow.
 
-IngredientPage: handles user input and initiates API calls.
 
-BestRecipePage: displays the highest-reanked recipe, shows ingredient match status, provides navigation to cooking instructions and additional recipes.
+## App Flow:
 
-AllRecipesPage: displays all recipes sorted by score.
+Ingredient Input → Questions Page → Best Recipe Page
+                                         ├── Cook → Recipe Detail Page
+                                         └── See More → All Recipes Page → Recipe Detail Page
 
-RecipeDetailsPage: displays full recipe instructions and ingredient list.
 
-Spoonacular: handles API requests and fetches recipe detail data.
+
+
+## Key Components:
+
+- **StartPage** - entry point of app; UI focus along with navigation to main workflow.
+
+- **IngredientPage** - handles user input and initiates API calls.
+
+- **QuestionPage** - Swipe-based ingredient check-in across the top 3 candidate recipes
+
+- **BestRecipePage** - displays the highest-ranked recipe, shows ingredient match status, provides navigation to cooking instructions and additional recipes.
+
+- **AllRecipesPage** - displays all recipes sorted by score.
+
+- **RecipeDetailsPage** - displays full recipe instructions and ingredient list.
+
+- **Spoonacular** - handles API requests and fetches recipe detail data.
+
+
+
+## Project Structure
+
+```
+lib/
+├── main.dart                  # App entry point
+├── app_colors.dart            # Global color constants
+├── start_page.dart            # Start screen
+├── diet_selection_page.dart   # Diet preference selection
+├── key_ingredient_page.dart   # Ingredient input screen
+├── question_page.dart         # Swipe-based ingredient check-in
+├── bestRecipe_page.dart       # Best matched recipe display
+├── allRecipes_page.dart       # All recipes sorted by score
+├── recipe_detail_page.dart    # Full recipe instructions
+└── spoonacular_service.dart   # Spoonacular API service
+```
+
 
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+```bash
+flutter pub get
+flutter run
+```
 
-A few resources to get you started if this is your first Flutter project:
+> ⚠️ Requires a valid Spoonacular API key in `lib/spoonacular_service.dart`
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+> 💡 All app logic lives in the `lib/` folder. Platform folders (`android/`, `ios/`, etc.) are auto-generated by Flutter and do not require modification.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+
+
+## Contributors
+*Listed alphabetically*
+
+- Acacia Edmond
+- Diana Hu
+- Keaton Lawson
+- Sam Cutler
+
+
+
+## Future Improvements
+
+- Support for multiple key ingredients
+- User accounts and saved recipes
+- Filter by dietary restrictions beyond the initial diet selection
