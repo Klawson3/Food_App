@@ -164,7 +164,7 @@ class _RecipePageState extends State<RecipePage> {
                 child: const Text(
                   "Ingredients:",
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -201,7 +201,7 @@ class _RecipePageState extends State<RecipePage> {
                               : isNeed
                                   ? Colors.red
                                   : Colors.grey,
-                          size: 16,
+                          size: 18,
                         ),
                         const SizedBox(width: 10),
                         Expanded(child: Text(name.toString())),
