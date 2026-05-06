@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'FoodApp Demo',
       
-      //This color scheme is the default but is explicitly overriden on certain pages
+      // This color scheme is the default but is explicitly overriden on certain pages
       theme: ThemeData(
         scaffoldBackgroundColor: AppColors.fetaWhite, 
         
