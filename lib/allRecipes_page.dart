@@ -8,8 +8,7 @@ class ResultPage extends StatefulWidget {
   final List<dynamic> recipes;
   final List<String> haveIngredients;
   final List<String> needIngredients;
-  //map to store missing ingredients per recipe ID
-  final Map<int, List<String>> recipeNeedMap;
+  final Map<int, List<String>> recipeNeedMap;   // Map to store missing ingredients per recipe ID
  
   const ResultPage({
     super.key,
