@@ -8,8 +8,9 @@ class ResultPage extends StatefulWidget {
   final List<dynamic> recipes;
   final List<String> haveIngredients;
   final List<String> needIngredients;
+  //map to store missing ingredients per recipe ID
   final Map<int, List<String>> recipeNeedMap;
-
+ 
   const ResultPage({
     super.key,
     required this.service,
@@ -26,11 +27,12 @@ class ResultPage extends StatefulWidget {
 
 class _ResultPageState extends State<ResultPage> {
   late List<Map<String, dynamic>> recipeDisplayData;
-
+  //stores processed recipe data with caluclated scores+ filtired ingridient list
   @override
+
   void initState() {
     super.initState();
-
+    // creates copy so dont mutate og list directly
     final sortedRecipes = List<dynamic>.from(widget.recipes);
 
     for (final recipe in sortedRecipes) {
@@ -55,13 +57,13 @@ class _ResultPageState extends State<ResultPage> {
       double simplicityBonus = (1 / (total + 1)) * 10; // tweakable bonus for simpler recipes
       recipe['finalScore'] = (matchScore + simplicityBonus).clamp(0,100); // final score out of 100
     }
-
+    // sort recipise by descending score 
     sortedRecipes.sort((a, b) {
       int scoreCompare = b['finalScore'].compareTo(a['finalScore']);
       if (scoreCompare != 0) return scoreCompare;
       return a['missedIngredientCount'].compareTo(b['missedIngredientCount']);
     });
-
+    // Buiild display-friendly data structure with relevant have/need lists for each recipe
     recipeDisplayData = sortedRecipes.map((recipe) {
       final recipeAllNames = [
         ...(recipe['usedIngredients'] as List).map((i) => i['name'] as String),
@@ -78,28 +80,30 @@ class _ResultPageState extends State<ResultPage> {
           .toList();
       
       return {
-        'recipe': recipe,
-        'have': relevantHave,
-        'need': relevantNeed,
+        'recipe': recipe,  //full recipe object
+        'have': relevantHave, // filtired "you have"
+        'need': relevantNeed, // filtired "you need"
       };
     }).toList();
   }
 
   @override
-/// Builds a Scaffold with an AppBar and a ListView of ListTile
-/// Each ListTile represents a recipe, with the title being the name of the
-/// recipe and the subtitle being a Column with the following children:
-/// - A Row with an amber star icon and the final score of the recipe
-/// - A Row with a green checkmark icon and the relevant ingredients the user has
-/// - If the user still needs some ingredients, a Row with a red close icon and
-///   the relevant ingredients the user still needs. When tapped, navigates to
-///   the RecipeDetailPage with the recipe and its details.
+  /// UI BUILD:
+  /// Displays list of recipes as cards
+  /// Each card shows:
+  /// - Image
+  /// - Title
+  /// - Match %
+  /// - Ingredients user has
+  /// - Ingredients user is missing
+  /// Clicking a card opens detailed recipe page
 @override
 Widget build(BuildContext context) {
   return Scaffold(
     appBar: AppBar(title: const Text("Recipe for you")),
     body: Column(
       children: [
+        //recipie list 
         Expanded(
           child: ListView.builder(
             itemCount: recipeDisplayData.length,
@@ -110,6 +114,7 @@ Widget build(BuildContext context) {
               final relevantNeed = data['need'] as List<String>;
 
               return GestureDetector(
+                //when recupie is tapped. fetch full details and navigate to detail page
                 onTap: () async {
                   final details =
                       await widget.service.getRecipeDetails(recipe['id']);
@@ -124,6 +129,7 @@ Widget build(BuildContext context) {
                     ),
                   );
                 },
+                ///card UI
                 child: Card(
                   margin: const EdgeInsets.symmetric(
                       horizontal: 12, vertical: 8),
@@ -134,6 +140,7 @@ Widget build(BuildContext context) {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      //recipie image 
                       ClipRRect(
                         borderRadius: const BorderRadius.vertical(
                           top: Radius.circular(15),
@@ -189,7 +196,7 @@ Widget build(BuildContext context) {
             },
           ),
         ),
-
+        ///restart button goes back to ingredient selection
         Padding(
           padding: const EdgeInsets.all(12),
           child: SizedBox(

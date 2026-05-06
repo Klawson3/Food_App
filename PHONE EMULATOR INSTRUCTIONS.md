@@ -1,4 +1,5 @@
-THIS IS FOR WINDOWS - Sam 
+These are instructions for how to set up an Andriod Emulator on Window, by Sam 
+
 I asked Gemini to help me with this. I modified the instrictions based on what worked for me.
 
 If you have the Github\Food_App folder in OneDrive it will mess everything up. Make sure it is not in that folder.
