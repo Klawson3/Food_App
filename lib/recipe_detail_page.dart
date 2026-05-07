@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import "package:url_launcher/url_launcher.dart";
+
+/// RecipeDetailPage displays the instructions of a particular recipe and the 
+/// ingredient list specific to that recipe.
 class RecipeDetailPage extends StatelessWidget {
   final Map<String, dynamic> recipe;
   final Map<String, dynamic> details;
