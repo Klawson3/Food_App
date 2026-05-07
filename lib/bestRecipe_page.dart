@@ -3,6 +3,19 @@ import 'spoonacular_service.dart';
 import 'allRecipes_page.dart';
 import 'recipe_detail_page.dart';
 
+/// RecipePage displays the highest-ranked recipe recommendation
+/// generated from the user's available ingredients.
+/// 
+/// The page presents:
+/// - A recipe image
+/// - Recipe titles and match score
+/// - Ingredients the user has in possesion
+/// - Navigation to cooking instructions
+/// - Access to additional recipe recommendations
+/// 
+ 
+ /// RecipePageState ectends a StatefulWidget inside the RecipePage
+ /// that performs navigation and dynamically processes recipe data.
 class RecipePage extends StatefulWidget {
   final SpoonacularService service;
   final Map<String, dynamic> bestRecipe;
@@ -21,12 +34,18 @@ class RecipePage extends StatefulWidget {
     required this.recipeNeedMap,
   });
 
+
   @override
   State<RecipePage> createState() => _RecipePageState();
 }
 
+/// Manages recipe processing, ingredient analysis, 
+/// and navigation functionality for RecipePage. 
 class _RecipePageState extends State<RecipePage> {
 
+
+/// Existing recipe and ingredient data are passed forward
+/// to perserve application state and avpid redundant API calls.
   void seeMore() {
     Navigator.push(
       context,
@@ -43,6 +62,12 @@ class _RecipePageState extends State<RecipePage> {
     );
   }
 
+
+/// Fetches detailed recipe information from the API
+/// and navigates to the RecipeDetailPage.
+/// 
+/// This function retrieves ecpanded instructions,
+/// ingredient measurements, and additional recipes.
   void cookRecipe() async {
     final details =
         await widget.service.getRecipeDetails(widget.bestRecipe['id']);
@@ -60,28 +85,46 @@ class _RecipePageState extends State<RecipePage> {
     );
   }
 
+
+/// Builds thr UI for the best recipe recommendation.
+/// 
+/// The interface includes:
+/// - Recipe image
+/// - Match score display
+/// - Ingredient availability analysis
+/// - Navigation controls
+/// 
+/// Ingredient indicators visually distinguish:
+/// - Ingredients already available
+/// - Nuetral recipe ingredients
   @override
   Widget build(BuildContext context) {
     final recipe = widget.bestRecipe;
     final have = widget.haveIngredients;
     final need = widget.needIngredients;
 
+    // Locate the original recipe object.
     final originalRecipe = widget.recipes.firstWhere(
       (r) => r['id'] == recipe['id'],
       orElse: () => {},
     );
-
+    // Combine used and missing ingredients for 
+    // unified ingredient analysis and display.
     final usedAndMissed = [
       ...(originalRecipe['usedIngredients'] ?? []),
       ...(originalRecipe['missedIngredients'] ?? []),
     ];
-
+    // Improves comparison efficiency and consistency.
     final usedAndMissedNames =
         usedAndMissed.map((i) => i['name'].toString().toLowerCase()).toSet();
 
+    // Retrieve the complete ingredient list from the detailed recipe data.
     final extendedIngredients =
         recipe['extendedIngredients'] as List? ?? [];
 
+    // Identify additional user ingredients that may not appear
+    // in the API's used ingredient list but are still relevant
+    // to recipe's extended ingredient list.
     final extraHave = have.where((h) =>
         !usedAndMissedNames.contains(h.toLowerCase()) &&
         !usedAndMissed.any((i) =>
@@ -91,12 +134,19 @@ class _RecipePageState extends State<RecipePage> {
         .map((h) => {'name': h})
         .toList();
 
+    // Merge additional ingredients with original ingredients for final display.
     final allIngredients = [...extraHave, ...usedAndMissed];
 
     int used = have.length;
     int missing = need.length;
     int total = used + missing;
 
+    // Calculate the recipe match score based on:
+    // Available ingredients, missing ingredients, and overall 
+    // recipe complexity.
+    //
+    // Higher score means that the recipe is both feasible and 
+    // relatively simple to prepare.
     double matchScore = total == 0 ? 0 : used / total;
     double complexPenalty = total / 30;
     recipe['finalScore'] = matchScore - complexPenalty;
