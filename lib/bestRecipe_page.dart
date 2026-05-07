@@ -164,6 +164,8 @@ class _RecipePageState extends State<RecipePage> {
             children: [
 
               // IMAGE
+              // Display the best recipe image to improve visual
+              // consistency and mobile presentation. 
               if (recipe['image'] != null)
                 ClipRRect(
                   borderRadius: BorderRadius.circular(20),
@@ -273,7 +275,7 @@ class _RecipePageState extends State<RecipePage> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: cookRecipe,
-                  child: const Text("Cook", 
+                  child: const Text("Cook", // Navigate to detailed cooking instructions.
                     style: TextStyle(
                       fontSize: 20,
                     ),
@@ -287,7 +289,7 @@ class _RecipePageState extends State<RecipePage> {
                 width: double.infinity,
                 child: OutlinedButton(
                   onPressed: seeMore,
-                  child: const Text("See More Recipes", 
+                  child: const Text("See More Recipes", // Navigate to AllRecipePage for additional recipes.
                     style: TextStyle(
                       fontSize: 20,
                     ),
