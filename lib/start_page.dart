@@ -47,7 +47,7 @@ class StartPage extends StatelessWidget {
                   ),
                 ),
 
-                // Creates gaps between the display features
+                // Creates gaps between the display features.
                 const SizedBox(height: 10),
 
                 FadeIn(

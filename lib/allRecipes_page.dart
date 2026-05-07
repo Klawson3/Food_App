@@ -8,7 +8,7 @@ class ResultPage extends StatefulWidget {
   final List<dynamic> recipes;
   final List<String> haveIngredients;
   final List<String> needIngredients;
-  final Map<int, List<String>> recipeNeedMap;   // Map to store missing ingredients per recipe ID
+  final Map<int, List<String>> recipeNeedMap;   // Map to store missing ingredients per recipe ID.
  
 
  /// ResultPage displays a list of recipe recommendations reanked
@@ -77,18 +77,18 @@ class _ResultPageState extends State<ResultPage> {
       int missing = relevantNeed.length;
       int total = used + missing;
       double matchScore = total == 0 ? 0 : (used / total) * 100;
-      double simplicityBonus = (1 / (total + 1)) * 10; // Tweakable bonus for simpler recipes
-      recipe['finalScore'] = (matchScore + simplicityBonus).clamp(0,100); // Final score out of 100
+      double simplicityBonus = (1 / (total + 1)) * 10; // Tweakable bonus for simpler recipes.
+      recipe['finalScore'] = (matchScore + simplicityBonus).clamp(0,100); // Final score out of 100.
     }
 
-    // Sort recipe by descending score 
+    // Sort recipe by descending score. 
     sortedRecipes.sort((a, b) {
       int scoreCompare = b['finalScore'].compareTo(a['finalScore']);
       if (scoreCompare != 0) return scoreCompare;
       return a['missedIngredientCount'].compareTo(b['missedIngredientCount']);
     });
 
-    // Buiild display-friendly data structure with relevant have/need lists for each recipe
+    // Buiild display-friendly data structure with relevant have/need lists for each recipe.
     recipeDisplayData = sortedRecipes.map((recipe) {
       final recipeAllNames = [
         ...(recipe['usedIngredients'] as List).map((i) => i['name'] as String),
@@ -105,9 +105,9 @@ class _ResultPageState extends State<ResultPage> {
           .toList();
       
       return {
-        'recipe': recipe,  // Full recipe object
-        'have': relevantHave, // Filtired "you have"
-        'need': relevantNeed, // Filtired "you need"
+        'recipe': recipe,  // Full recipe object.
+        'have': relevantHave, // Filtired "you have".
+        'need': relevantNeed, // Filtired "you need".
       };
     }).toList();
   }
@@ -142,7 +142,7 @@ Widget build(BuildContext context) {
               final relevantNeed = data['need'] as List<String>;
 
               return GestureDetector(
-                // Fetch full details and navigate to detail page
+                // Fetch full details and navigate to detail page.
                 onTap: () async {
                   final details =
                       await widget.service.getRecipeDetails(recipe['id']);
@@ -225,7 +225,7 @@ Widget build(BuildContext context) {
           ),
         ),
 
-        // Restart button goes back to ingredient selection page
+        // Restart button goes back to ingredient selection page.
         Padding(
           padding: const EdgeInsets.all(12),
           child: SizedBox(

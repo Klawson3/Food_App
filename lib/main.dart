@@ -3,7 +3,7 @@ import 'start_page.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'app_colors.dart'; 
 
-//Run this page to make the App start
+//Run this page to make the App start.
 void main() {
   runApp(const MyApp());
 }
@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'FoodApp Demo',
       
-      // This color scheme is the default but is explicitly overriden on certain pages
+      // This color scheme is the default but is explicitly overriden on certain pages.
       theme: ThemeData(
         scaffoldBackgroundColor: AppColors.fetaWhite, 
         
