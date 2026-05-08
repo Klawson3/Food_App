@@ -92,7 +92,6 @@ class _RecipePageState extends State<RecipePage> {
 /// 
 /// The interface includes:
 /// - Recipe image
-/// - Match score display
 /// - Ingredient availability analysis
 /// - Navigation controls
 /// 
