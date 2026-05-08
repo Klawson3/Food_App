@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'spoonacular_service.dart';
 import 'allRecipes_page.dart';
 import 'recipe_detail_page.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'app_colors.dart';
 
 /// RecipePage displays the highest-ranked recipe recommendation
 /// generated from the user's available ingredients.
@@ -152,151 +154,208 @@ class _RecipePageState extends State<RecipePage> {
     recipe['finalScore'] = matchScore - complexPenalty;
 
     return Scaffold(
+      extendBodyBehindAppBar: true, 
+      
       appBar: AppBar(
-        title: Text(recipe['title'] ?? "Best Recipe Match"),
+        backgroundColor: Colors.transparent,
+        iconTheme: const IconThemeData(color: AppColors.deepSpinach),
+        toolbarHeight: 60, 
+        centerTitle: true,
+        title: Text(
+          recipe['title'] ?? "Best Recipe Match",
+          maxLines: 2,
+          softWrap: true,
+          overflow: TextOverflow.ellipsis,
+          style: GoogleFonts.nunito(
+            fontSize: 22,
+            color: AppColors.deepSpinach,
+            fontWeight: FontWeight.w800,
+            height: 1.2, 
+          ),
+        ),
       ),
 
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: BoxDecoration(
+          gradient: AppColors.backgroundGradient,
+        ),
+        
+        child: SafeArea(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
 
-              // IMAGE
-              // Display the best recipe image to improve visual
-              // consistency and mobile presentation. 
-              if (recipe['image'] != null)
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: AspectRatio(
-                    aspectRatio: 1,
-                    child: Image.network(
-                      recipe['image'],
-                      fit: BoxFit.cover,
+                  // IMAGE
+                  // Display the best recipe image to improve visual
+                  // consistency and mobile presentation. 
+                  if (recipe['image'] != null)
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: .15),
+                            blurRadius: 15,
+                            offset: const Offset(0, 8),
+                          ),
+                        ],
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: AspectRatio(
+                          aspectRatio: 1,
+                          child: Image.network(
+                            recipe['image'],
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                    ),
+
+                  const SizedBox(height: 20),
+
+                  // RECIPE TITLE
+                  Text(
+                    recipe['title'] ?? "",
+                    textAlign: TextAlign.center,
+                    softWrap: true,
+                    overflow: TextOverflow.visible,
+                    style: GoogleFonts.nunito(
+                      fontSize: 28,
+                      fontWeight: FontWeight.w900,
+                      color: AppColors.deepSpinach,
+                      height: 1.2,
                     ),
                   ),
-                ),
 
-              const SizedBox(height: 20),
+                  const SizedBox(height: 10),
 
-              // RECIPE TITLE
-              Text(
-                recipe['title'] ?? "",
-                textAlign: TextAlign.center,
-                softWrap: true,
-                overflow: TextOverflow.visible,
-                style: const TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-
-              const SizedBox(height: 10),
-
-              // SCORE
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.star, color: Colors.amber, size: 18),
-                  const SizedBox(width: 5),
-                  Text(
-                    (recipe['finalScore'] is num)
-                        ? (recipe['finalScore'] as num).toStringAsFixed(2)
-                        : "0.00",
+                  //INGREDIENT TITLE
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Ingredients:",
+                      style: GoogleFonts.nunito(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w800,
+                        color: AppColors.deepSpinach,
+                      ),
+                    ),
                   ),
+
+                  const SizedBox(height: 15),
+
+                  // INGREDIENT LIST
+                  Column(
+                    children: allIngredients.map<Widget>((i) {
+                      final name = i['name'];
+
+                      final isHave = have.any(
+                        (h) => name
+                            .toString()
+                            .toLowerCase()
+                            .contains(h.toLowerCase()),
+                      );
+
+                      final isNeed = need.contains(name);
+
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 6), 
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start, 
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(top: 2.0),
+                              child: Icon(
+                                isHave
+                                    ? Icons.check_circle
+                                    : isNeed
+                                        ? Icons.cancel
+                                        : Icons.radio_button_unchecked,
+                                color: isHave
+                                    ? AppColors.crispLettuce
+                                    : isNeed
+                                        ? AppColors.carrotOrange
+                                        : Colors.grey.shade400,
+                                size: 26, 
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            
+                              Expanded(
+                                child: Text(
+                                  name.toString()[0].toUpperCase() + name.toString().substring(1), 
+                                  style: GoogleFonts.nunito(
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.peppercorn,
+                                  ),
+                                )
+                              ),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  // BUTTONS
+                  SizedBox(
+                    width: double.infinity,
+                    height: 60, 
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.carrotOrange,
+                        foregroundColor: AppColors.fetaWhite,
+                        elevation: 5,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                      onPressed: cookRecipe,
+                      child: Text("Cook", // Navigate to detailed cooking instructions.
+                        style: GoogleFonts.nunito(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 1.2,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 15),
+
+                  SizedBox(
+                    width: double.infinity,
+                    height: 60, 
+                    child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: AppColors.deepSpinach,
+                        side: const BorderSide(color: AppColors.deepSpinach, width: 2),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                      onPressed: seeMore,
+                      child: Text("See More Recipes", // Navigate to AllRecipePage for additional recipes.
+                        style: GoogleFonts.nunito(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                    ),
+                  ),
+                  
+                  const SizedBox(height: 20), // Bottom padding
                 ],
               ),
-
-              const SizedBox(height: 20),
-
-              //INGREDIENT TITLE
-              Align(
-                alignment: Alignment.centerLeft,
-                child: const Text(
-                  "Ingredients:",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 10),
-
-              // INGREDIENT LIST
-              Column(
-                children: allIngredients.map<Widget>((i) {
-                  final name = i['name'];
-
-                  final isHave = have.any(
-                    (h) => name
-                        .toString()
-                        .toLowerCase()
-                        .contains(h.toLowerCase()),
-                  );
-
-                  final isNeed = need.contains(name);
-
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4),
-                    child: Row(
-                      children: [
-                        Icon(
-                          isHave
-                              ? Icons.check
-                              : isNeed
-                                  ? Icons.cancel
-                                  : Icons.circle,
-                          color: isHave
-                              ? Colors.green
-                              : isNeed
-                                  ? Colors.red
-                                  : Colors.grey,
-                          size: 30,
-                        ),
-                        const SizedBox(width: 10),
-                          Expanded(child: Text(name.toString(), 
-                            style: TextStyle(
-                              fontSize: 20,
-                            ),
-                          )
-                        ),
-                      ],
-                    ),
-                  );
-                }).toList(),
-              ),
-
-              const SizedBox(height: 30),
-
-              // BUTTONS
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: cookRecipe,
-                  child: const Text("Cook", // Navigate to detailed cooking instructions.
-                    style: TextStyle(
-                      fontSize: 20,
-                    ),
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 10),
-
-              SizedBox(
-                width: double.infinity,
-                child: OutlinedButton(
-                  onPressed: seeMore,
-                  child: const Text("See More Recipes", // Navigate to AllRecipePage for additional recipes.
-                    style: TextStyle(
-                      fontSize: 20,
-                    ),
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
         ),
       ),
