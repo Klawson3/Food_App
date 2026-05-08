@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import "package:url_launcher/url_launcher.dart";
+import 'package:google_fonts/google_fonts.dart';
+import 'app_colors.dart';
 
 /// RecipeDetailPage displays the instructions of a particular recipe and the 
 /// ingredient list specific to that recipe.
@@ -23,19 +25,41 @@ class RecipeDetailPage extends StatelessWidget {
       );
     }
   }
+
   @override
-/// Builds a recipe detail page with ingredients and instructions.
-///
-/// The page shows the title of the recipe in the app bar, and a list of
-/// ingredients and instructions in the body. If there are no instructions
-/// available, it will show a message saying "No instructions available".
+  /// Builds a recipe detail page with ingredients and instructions.
+  ///
+  /// The page shows the title of the recipe in the app bar, and a list of
+  /// ingredients and instructions in the body. If there are no instructions
+  /// available, it will show a message saying "No instructions available".
   Widget build(BuildContext context) {
     final ingredients = details['extendedIngredients'] ?? [];
     final instructions = details['instructions']?.toString().replaceAll(RegExp(r'<[^>]*>'), '') 
         ?? "No instructions available";
     final sourceUrl = details['sourceUrl'];
+    
     return Scaffold(
-      appBar: AppBar(title: Text(recipe['title'])),
+      backgroundColor: AppColors.fetaWhite,
+      
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        iconTheme: const IconThemeData(color: AppColors.deepSpinach),
+        toolbarHeight: 60, 
+        title: Text(
+          recipe['title'],
+          maxLines: 2,
+          softWrap: true,
+          overflow: TextOverflow.ellipsis,
+
+          style: GoogleFonts.nunito(
+            fontSize: 22,
+            color: AppColors.deepSpinach,
+            fontWeight: FontWeight.w800,
+            height: 1.2,
+          ),
+        )
+      ),
+
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -45,122 +69,165 @@ class RecipeDetailPage extends StatelessWidget {
               Stack(
                 children: [
                   Image.network(
-                  recipe['image'],
-                  width: double.infinity,
-                  height: 220,
-                  fit: BoxFit.cover,
-                ),
-                Positioned(
-                  top: 40,
-                  left: 10,
-                  child: CircleAvatar(
-                    backgroundColor: Colors.black54,
-                    child: IconButton(
-                      icon: const Icon(Icons.arrow_back, color: Colors.white),
-                      onPressed: () => Navigator.pop(context),
-                    ),
+                    recipe['image'],
+                    width: double.infinity,
+                    height: 250, 
+                    fit: BoxFit.cover,
                   ),
-                ),
-      ],
+                ],
               ),
 
             Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(10), 
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start, 
                 children: [
                   //  TITLE
-                  Text(
-            recipe['title'],
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
+                  SizedBox(
+                    width: double.infinity,
+                    child: Text(
+                      recipe['title'],
+                      textAlign: TextAlign.center,
+                      softWrap: true,
+                      overflow: TextOverflow.visible,
+                      style: GoogleFonts.nunito(
+                        fontSize: 32,
+                        fontWeight: FontWeight.w800,
+                        color: AppColors.deepSpinach,
+                      ),
                     ),
                   ),
 
                   const SizedBox(height: 10),
 
                   //  TIME + SERVINGS
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 12,
-                      horizontal: 16,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade200,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Column(
-                            children: [
-                              const Icon(Icons.timer),
-                              const SizedBox(height: 4),
-                              Text("${details['readyInMinutes'] ?? 'N/A'} min"),
-                            ],
-                          ),
-                          Column(
-                            children: [
-                              const Icon(Icons.restaurant),
-                              const SizedBox(height: 4),
-                              Text("Serves ${details['servings'] ?? 'N/A'}"),
-                            ],
-                          ),
-                        ],
+                  Center(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 12,
+                        horizontal: 30,
                       ),
+                      decoration: BoxDecoration(
+                        color: AppColors.crispLettuce.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min, 
+                          children: [
+                            Column(
+                              children: [
+                                const Icon(Icons.timer_outlined, size: 50, color: AppColors.deepSpinach),
+                                const SizedBox(height: 4),
+                                Text("${details['readyInMinutes'] ?? 'N/A'} min",
+                                  style: GoogleFonts.nunito(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.deepSpinach,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(width: 50), // Spacing between the two columns
+                            Column(
+                              children: [
+                                const Icon(Icons.restaurant_outlined, size: 50, color: AppColors.deepSpinach),
+                                const SizedBox(height: 4),
+                                Text("Serves ${details['servings'] ?? 'N/A'}",
+                                  style: GoogleFonts.nunito(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.deepSpinach,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                     ),
+                  ),
                   
-                  const SizedBox(height:20),
+                  const SizedBox(height:25),
                   
                   if (sourceUrl != null)
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton.icon(
                         onPressed: () => openRecipeLink(sourceUrl),
-                        icon: const Icon(Icons.play_circle_fill),
-                        label: const Text("Watch / Full Recipe Guide"),
+                        icon: const Icon(Icons.play_circle_fill, size: 30),
+                        label: Text("Watch / Full Recipe Guide",
+                          style: GoogleFonts.nunito(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                         style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          backgroundColor: AppColors.carrotOrange,
+                          foregroundColor: AppColors.fetaWhite,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          )
                         ),
                       ),
                     ),
+                  
                   const SizedBox(height: 20),
 
                   //  INGREDIENTS
-                  const Text(
+                  Text(
                     "Ingredients",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: GoogleFonts.nunito(
+                      fontSize: 24, 
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.deepSpinach,
+                    ),
                   ),
 
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 15),
 
                   ...ingredients.map<Widget>((ing) => Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 4),
+                        padding: const EdgeInsets.symmetric(vertical: 6),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Icon(Icons.circle, size: 6),
-                            const SizedBox(width: 8),
-                            Expanded(child: Text(ing['original'])),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Text(
+                                // Automatically capitalizes the first letter of the ingredient
+                                ing['original'][0].toUpperCase() + ing['original'].substring(1),
+                                style: GoogleFonts.nunito(
+                                  fontSize: 18,
+                                  color: AppColors.peppercorn,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              )
+                            ),
                           ],
                         ),
                       )),
 
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 15),
 
                   //  INSTRUCTIONS
-                  const Text(
-                  "Instructions",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
+                  Text("Instructions",
+                    style: GoogleFonts.nunito(
+                      fontSize: 24, 
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.deepSpinach,
+                    ),
+                  ),
 
-                const SizedBox(height: 10),
+                const SizedBox(height: 15),
 
-                Text(
-                  instructions,
-                  style: const TextStyle(height: 1.5),
+                Text(instructions,
+                  style: GoogleFonts.nunito(
+                    fontSize: 18,
+                    color: AppColors.peppercorn,
+                    height: 1.6, 
+                  ),
                 ),
+                
+                const SizedBox(height: 40), // Bottom padding
               ],
             ),
           ),
