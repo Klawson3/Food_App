@@ -269,10 +269,10 @@ Widget build(BuildContext context) {
 
             // Restart button goes back to ingredient selection page.
             Padding(
-              padding: const EdgeInsets.all(20), 
+              padding: const EdgeInsets.all(10), 
               child: SizedBox(
                 width: double.infinity,
-                height: 60, 
+                height: 50, 
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.deepSpinach,
