@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'spoonacular_service.dart';
 import 'recipe_detail_page.dart';
 import 'key_ingredient_page.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'app_colors.dart';
+
 class ResultPage extends StatefulWidget {
   final Map<String, dynamic> bestRecipe;
   final SpoonacularService service;
@@ -127,124 +130,181 @@ class _ResultPageState extends State<ResultPage> {
 @override
 Widget build(BuildContext context) {
   return Scaffold(
-    appBar: AppBar(title: const Text("Recipe for you")),
-    body: Column(
-      children: [
-        
-        // Recipie list 
-        Expanded(
-          child: ListView.builder(
-            itemCount: recipeDisplayData.length,
-            itemBuilder: (context, index) {
-              final data = recipeDisplayData[index];
-              final recipe = data['recipe'] as Map<String, dynamic>;
-              final relevantHave = data['have'] as List<String>;
-              final relevantNeed = data['need'] as List<String>;
+    extendBodyBehindAppBar: true,
 
-              return GestureDetector(
-                // Fetch full details and navigate to detail page.
-                onTap: () async {
-                  final details =
-                      await widget.service.getRecipeDetails(recipe['id']);
+    appBar: AppBar(
+      backgroundColor: Colors.transparent,
+      iconTheme: const IconThemeData(color: AppColors.deepSpinach),
+      title: Text(
+        "Recipes for you",
+        style: GoogleFonts.nunito(
+          fontSize: 26,
+          color: AppColors.deepSpinach,
+          fontWeight: FontWeight.w800,
+        ),
+      ),
+    ),
+    
+    body: Container(
+      decoration: BoxDecoration(
+        gradient: AppColors.backgroundGradient,
+      ),
+      child: SafeArea(
+        child: Column(
+          children: [
+            
+            // Recipie list 
+            Expanded(
+              child: ListView.builder(
+                padding: const EdgeInsets.only(top: 10),
+                itemCount: recipeDisplayData.length,
+                itemBuilder: (context, index) {
+                  final data = recipeDisplayData[index];
+                  final recipe = data['recipe'] as Map<String, dynamic>;
+                  final relevantHave = data['have'] as List<String>;
+                  final relevantNeed = data['need'] as List<String>;
 
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => RecipeDetailPage(
-                        recipe: recipe,
-                        details: details,
+                  return GestureDetector(
+                    // Fetch full details and navigate to detail page.
+                    onTap: () async {
+                      final details =
+                          await widget.service.getRecipeDetails(recipe['id']);
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => RecipeDetailPage(
+                            recipe: recipe,
+                            details: details,
+                          ),
+                        ),
+                      );
+                    },
+                    // Card UI
+                    child: Card(
+                      color: AppColors.fetaWhite,
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 10),
+                      elevation: 5,
+                      shadowColor: Colors.black.withValues(alpha: .3),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20), 
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Recipie image 
+                          ClipRRect(
+                            borderRadius: const BorderRadius.vertical(
+                              top: Radius.circular(20), 
+                            ),
+                            child: Image.network(
+                              recipe['image'],
+                              height: 180, 
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(16), 
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  recipe['title'],
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.nunito(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w800,
+                                    color: AppColors.deepSpinach,
+                                    height: 1.2,
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Row(
+                                  children: [
+                                    const Icon(Icons.star,
+                                        color: AppColors.carrotOrange, size: 24),
+                                    const SizedBox(width: 6),
+                                    Text(
+                                      "${recipe['finalScore'].toStringAsFixed(0)}% Match",
+                                      style: GoogleFonts.nunito(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w700,
+                                        color: AppColors.peppercorn,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 5),
+                                Text(
+                                  "You have: ${relevantHave.join(", ")}",
+                                  style: GoogleFonts.nunito(
+                                    fontSize: 18,
+                                    color: AppColors.peppercorn,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                if (relevantNeed.isNotEmpty)
+                                  Text(
+                                    "Missing: ${relevantNeed.join(", ")}",
+                                    style: GoogleFonts.nunito(
+                                      fontSize: 18,
+                                      color: AppColors.carrotOrange,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   );
                 },
-                // Card UI
-                child: Card(
-                  margin: const EdgeInsets.symmetric(
-                      horizontal: 12, vertical: 8),
-                  elevation: 3,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
+              ),
+            ),
+
+            // Restart button goes back to ingredient selection page.
+            Padding(
+              padding: const EdgeInsets.all(20), 
+              child: SizedBox(
+                width: double.infinity,
+                height: 60, 
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.deepSpinach,
+                    foregroundColor: AppColors.fetaWhite,
+                    elevation: 5,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Recipie image 
-                      ClipRRect(
-                        borderRadius: const BorderRadius.vertical(
-                          top: Radius.circular(15),
-                        ),
-                        child: Image.network(
-                          recipe['image'],
-                          height: 160,
-                          width: double.infinity,
-                          fit: BoxFit.cover,
-                        ),
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            IngredientPage(),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              recipe['title'],
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 6),
-                            Row(
-                              children: [
-                                const Icon(Icons.star,
-                                    color: Colors.amber, size: 16),
-                                const SizedBox(width: 4),
-                                Text("${recipe['finalScore'].toStringAsFixed(0)}% Match"),
-                              ],
-                            ),
-                            const SizedBox(height: 6),
-                            Text(
-                              "You have: ${relevantHave.join(", ")}",
-                              style: const TextStyle(fontSize: 13),
-                            ),
-                            if (relevantNeed.isNotEmpty)
-                              Text(
-                                "Missing: ${relevantNeed.join(", ")}",
-                                style: const TextStyle(
-                                  fontSize: 13,
-                                  color: Colors.red,
-                                ),
-                              ),
-                          ],
-                        ),
-                      ),
-                    ],
+                    );
+                  },
+                  child: Text(
+                    "Restart",
+                    style: GoogleFonts.nunito(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 1.2,
+                    ),
                   ),
                 ),
-              );
-            },
-          ),
-        ),
-
-        // Restart button goes back to ingredient selection page.
-        Padding(
-          padding: const EdgeInsets.all(12),
-          child: SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        IngredientPage(),
-                  ),
-                );
-              },
-              child: const Text("Restart"),
+              ),
             ),
-          ),
+          ],
         ),
-      ],
+      ),
     ),
   );
 } // close build
