@@ -34,8 +34,7 @@ class RecipeDetailPage extends StatelessWidget {
   /// available, it will show a message saying "No instructions available".
   Widget build(BuildContext context) {
     final ingredients = details['extendedIngredients'] ?? [];
-    final instructions = details['instructions']?.toString().replaceAll(RegExp(r'<[^>]*>'), '') 
-        ?? "No instructions available";
+    final analyzedInstructions = details['analyzedInstructions'];
     final sourceUrl = details['sourceUrl'];
     
     return Scaffold(
@@ -43,21 +42,27 @@ class RecipeDetailPage extends StatelessWidget {
       
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        iconTheme: const IconThemeData(color: AppColors.deepSpinach),
-        toolbarHeight: 60, 
-        title: Text(
-          recipe['title'],
-          maxLines: 2,
-          softWrap: true,
-          overflow: TextOverflow.ellipsis,
+        elevation: 0,
+        iconTheme: const IconThemeData(
+          color: AppColors.deepSpinach,
+        ),
 
-          style: GoogleFonts.nunito(
-            fontSize: 22,
-            color: AppColors.deepSpinach,
-            fontWeight: FontWeight.w800,
-            height: 1.2,
+        title: SizedBox(
+          width: MediaQuery.of(context).size.width * 0.65,
+          child: Text(
+            recipe['title'],
+            textAlign: TextAlign.center,
+            softWrap: true,
+            overflow: TextOverflow.visible,
+
+            style: GoogleFonts.nunito(
+              fontSize: 20,
+              fontWeight: FontWeight.w800,
+              color: AppColors.deepSpinach,
+              height: 1.2,
+            ),
           ),
-        )
+        ), 
       ),
 
       body: SingleChildScrollView(
@@ -212,32 +217,98 @@ class RecipeDetailPage extends StatelessWidget {
 
                   const SizedBox(height: 12),
 
-                  //  INSTRUCTIONS
-                  Text("Instructions",
+                  // INSTRUCTIONS TITLE
+                  Text(
+                    "Instructions",
                     style: GoogleFonts.nunito(
-                      fontSize: 24, 
+                      fontSize: 24,
                       fontWeight: FontWeight.w800,
                       color: AppColors.deepSpinach,
                     ),
                   ),
 
-                const SizedBox(height: 18),
+                  const SizedBox(height: 18),
 
-                Text(instructions,
-                  style: GoogleFonts.nunito(
-                    fontSize: 18,
-                    color: AppColors.peppercorn,
-                    height: 1.6, 
-                  ),
-                ),
-                
-                const SizedBox(height: 40), // Bottom padding
-              ],
+                  if (analyzedInstructions != null &&
+                      analyzedInstructions.isNotEmpty &&
+                      analyzedInstructions[0]['steps'] != null)
+                    ...List<Widget>.from(
+                      analyzedInstructions[0]['steps'].map<Widget>((step) {
+                        return Container(
+                          width: double.infinity,
+                          margin: const EdgeInsets.only(bottom: 16),
+                          padding: const EdgeInsets.all(16),
+
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(18),
+                            boxShadow: [
+                             BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.05),
+                              blurRadius: 6,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
+                        ),
+
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+
+                            // STEP NUMBER
+                            Container(
+                              width: 32,
+                              height: 32,
+                              alignment: Alignment.center,
+
+                              decoration: const BoxDecoration(
+                                color: AppColors.carrotOrange,
+                                shape: BoxShape.circle,
             ),
-          ),
-        ],
-      ),
-    ),
-  );
+
+                              child: Text(
+                                "${step['number']}",
+                                style: GoogleFonts.nunito(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+
+                            const SizedBox(width: 14),
+
+                            // STEP TEXT
+                            Expanded(
+                              child: Text(
+                                step['step'],
+                                style: GoogleFonts.nunito(
+                                  fontSize: 17,
+                                  height: 1.5,
+                                  color: AppColors.peppercorn,
+              ),
+                              ),
+                            ),
+                          ],
+                        ),
+                       );
+                      }),
+                    )
+                  else
+                    Text(
+                      "No instructions available",
+                      style: GoogleFonts.nunito(
+                        fontSize: 18,
+                        color: AppColors.peppercorn,
+                      ),
+                    ),
+                                  const SizedBox(height:40),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+    );
   }
 }
+                         //bottom padding
