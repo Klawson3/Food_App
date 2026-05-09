@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 class SpoonacularService {
   final String apiKey = '65c365ec5fc246a4a9ca52f86f61f97e';
   final String baseUrl = 'https://api.spoonacular.com';
+  final String BACKUPapikey = '428f09305fd24d488a70c211888dda28';
 
   /// Searches for recipes by given ingredients.
   ///
