@@ -82,18 +82,22 @@ class RecipeDetailPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start, 
                 children: [
+                  
                   //  TITLE
-                  SizedBox(
-                    width: double.infinity,
-                    child: Text(
-                      recipe['title'],
-                      textAlign: TextAlign.center,
-                      softWrap: true,
-                      overflow: TextOverflow.visible,
-                      style: GoogleFonts.nunito(
-                        fontSize: 32,
-                        fontWeight: FontWeight.w800,
-                        color: AppColors.deepSpinach,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: Text(
+                        recipe['title'],
+                        textAlign: TextAlign.center,
+                        softWrap: true,
+                        overflow: TextOverflow.visible,
+                        style: GoogleFonts.nunito(
+                          fontSize: 32,
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.deepSpinach,
+                        ),
                       ),
                     ),
                   ),
@@ -171,7 +175,7 @@ class RecipeDetailPage extends StatelessWidget {
                       ),
                     ),
                   
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 25),
 
                   //  INGREDIENTS
                   Text(
@@ -206,7 +210,7 @@ class RecipeDetailPage extends StatelessWidget {
                         ),
                       )),
 
-                  const SizedBox(height: 15),
+                  const SizedBox(height: 12),
 
                   //  INSTRUCTIONS
                   Text("Instructions",
@@ -217,7 +221,7 @@ class RecipeDetailPage extends StatelessWidget {
                     ),
                   ),
 
-                const SizedBox(height: 15),
+                const SizedBox(height: 18),
 
                 Text(instructions,
                   style: GoogleFonts.nunito(
