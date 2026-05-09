@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class SpoonacularService {
-  final String apiKey = '6c86fd3ac4d6461c99b4fadd891e5b67';
+  final String apiKey = '65c365ec5fc246a4a9ca52f86f61f97e';
   final String baseUrl = 'https://api.spoonacular.com';
 
   /// Searches for recipes by given ingredients.
